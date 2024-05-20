@@ -1,0 +1,31 @@
+name: DsLauncher-Nugets
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+env:
+  version: 1.0.${GITHUB_RUN_NUMBER}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4.0.0
+        with:
+          dotnet-version: '8.0.x'
+          source-url: https://nuget.pkg.github.com/dibrysoft/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
+          
+      - run: dotnet build DsLauncher.ApiClient/DsLauncher.ApiClient.csproj --configuration Release /p:Version=${{ env.version}}
+      - name: Create the package
+        run: dotnet pack DsLauncher.ApiClient/DsLauncher.ApiClient.csproj --configuration Release /p:Version=${{ env.version }}
+      - name: Publish to github
+        run: dotnet nuget push DsLauncher.ApiClient/bin/Release/*.nupkg  -k ${{ secrets.GH_TOKEN }} -s https://nuget.pkg.github.com/DibrySoft/index.json --skip-duplicate
