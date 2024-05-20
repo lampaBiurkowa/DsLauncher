@@ -1,0 +1,54 @@
+# Ignore Visual Studio files
+.vs/
+*.vscode/
+*.suo
+*.user
+*.sln.docstates
+
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore NuGet packages
+packages/
+
+# Ignore user-specific files
+*.userprefs
+*.usertasks
+*.userassemblyinfo
+
+# Ignore ReSharper files
+_ReSharper*/
+*.resharper*
+*.[Rr]e[Ss]harper
+
+# Ignore Visual Studio Code files
+.vscode/
+
+# Ignore SQL Server files
+*.mdf
+*.ldf
+
+# Ignore Windows folder settings files
+[Tt]humbs.db
+Desktop.ini
+
+# Ignore node_modules folder
+node_modules/
+
+# Ignore log files
+*.log
+
+# Ignore OS generated files
+.DS_Store
+ehthumbs.db
+Icon?
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# Ignore backup files
+*~
+*.bak
+*.swp
+setup.sh
