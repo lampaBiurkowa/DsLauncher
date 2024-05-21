@@ -4,7 +4,8 @@ namespace DsLauncher.Models;
 
 public class Product : Entity, IAudited, ITimeStamped, ISoftDelete
 {
-    public long DeveloperId { get; set; }
+    [DsId(nameof(Models.Developer))]
+    public DsId DeveloperDsId { get; set; }
     public required Developer Developer { get; set; }
     public required string Description { get; set; }
     public required string Name { get; set; }

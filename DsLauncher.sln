@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DsLauncher.Models", "DsLaun
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DsLauncher.ApiClient", "DsLauncher.ApiClient\DsLauncher.ApiClient.csproj", "{1375615F-5D76-4D6F-85FB-99BDAF04CD92}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generator", "Generator\Generator.csproj", "{EEC91783-9C48-42D3-9B66-2D0822648772}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{1375615F-5D76-4D6F-85FB-99BDAF04CD92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1375615F-5D76-4D6F-85FB-99BDAF04CD92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1375615F-5D76-4D6F-85FB-99BDAF04CD92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEC91783-9C48-42D3-9B66-2D0822648772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEC91783-9C48-42D3-9B66-2D0822648772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEC91783-9C48-42D3-9B66-2D0822648772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEC91783-9C48-42D3-9B66-2D0822648772}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
