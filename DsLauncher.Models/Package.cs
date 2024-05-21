@@ -6,7 +6,7 @@ public class Package : Entity, ISoftDelete, ITimeStamped
 {
     public DateTime Date { get; set; }
     public required Product Product { get; set; }
-    public int ProductId { get; set; }
+    public long ProductId { get; set; }
     public required string Description { get; set; }
     public required string ExePath { get; set; }
     public DateTime CreatedAt { get; set; }

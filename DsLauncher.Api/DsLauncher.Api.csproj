@@ -8,8 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DibBaseApi" Version="0.0.9" />
-    <PackageReference Include="DsAuth.TokenVerifier" Version="1.0.8" />
+    <PackageReference Include="DibBaseApi" Version="0.0.10" />
+    <PackageReference Include="DibDataGenerator" Version="0.0.10" />
+    <PackageReference Include="DsAuth.TokenVerifier" Version="1.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
     <PackageReference Include="NSwag.AspNetCore" Version="14.0.7" />
