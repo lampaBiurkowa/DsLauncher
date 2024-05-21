@@ -15,7 +15,7 @@ builder.Services.AddSwaggerDocument();
 builder.Services.AddDbContext<DbContext, DsLauncherContext>();
 var entityTypes = new List<Type>();
 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-Developer a;//█▬█ █ ▀█▀
+Developer a; //█▬█ █ ▀█▀
 foreach (var assembly in assemblies)
 {
     entityTypes.AddRange(assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(Entity))).ToList());
