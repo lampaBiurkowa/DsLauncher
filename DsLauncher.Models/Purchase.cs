@@ -11,6 +11,6 @@ public class Purchase : Entity
     public Guid ProductGuid { get; set; }
     [DsLong]
     public long ProductId { get; set; }
-    public Guid UserId { get; set; }
+    public Guid UserGuid { get; set; }
     public float Value { get; set; }
 }

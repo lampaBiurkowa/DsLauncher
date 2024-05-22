@@ -67,7 +67,7 @@ public class Generator
         Name = GenerateString(),
         Description = LoremIpsum(),
         Website = GenerateString(),
-        UserId = GenerateGuid()
+        UserGuid = GenerateGuid()
     };
 
     public static News GenerateNews() => new() 
@@ -101,7 +101,7 @@ public class Generator
         Date = DateTime.Now,
         Product = product,
         Value = GenerateInt(),
-        UserId = GenerateGuid()
+        UserGuid = GenerateGuid()
     };
 
     public static GameActivity GenerateGameActivity(Product product) => new() 
@@ -109,7 +109,7 @@ public class Generator
         StartDate = DateTime.Now,
         EndDate = DateTime.Now.AddMinutes(5),
         Product = product,
-        UserId = GenerateGuid()
+        UserGuid = GenerateGuid()
     };
 
     public static Package GeneratePackage(Product product, string? exeName = null) => new() 
@@ -128,7 +128,7 @@ public class Generator
 
         for (int i = 0; i < 10; i++)
             db.Developer.Add(GenerateDeveloper());
-        db.Developer.Add(new() { Name = "Cardboard Inc", Description = "cardboard",  Website = "www.example.com", UserId = GenerateGuid()});
+        db.Developer.Add(new() { Name = "Cardboard Inc", Description = "cardboard",  Website = "www.example.com", UserGuid = GenerateGuid()});
         db.SaveChanges();
 
         for (int i = 0; i < 10; i++)

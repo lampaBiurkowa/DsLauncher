@@ -6,6 +6,6 @@ public class GameActivityEntityTypeConfiguration : IEntityTypeConfiguration<Game
 {
     public void Configure(EntityTypeBuilder<GameActivity> builder)
     {
-        builder.Property(x => x.UserId).IsRequired();
+        builder.Property(x => x.UserGuid).IsRequired();
     }
 }

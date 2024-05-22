@@ -8,8 +8,8 @@ public class FollowEntityTypeConfiguration : IEntityTypeConfiguration<Developer>
     {
         builder.Property(x => x.Description).IsRequired();
         builder.Property(x => x.Name).IsRequired();
-        builder.Property(x => x.UserId).IsRequired();
+        builder.Property(x => x.UserGuid).IsRequired();
         builder.HasIndex(x => x.Name).IsUnique();
-        builder.HasIndex(x => x.UserId).IsUnique();
+        builder.HasIndex(x => x.UserGuid).IsUnique();
     }
 }

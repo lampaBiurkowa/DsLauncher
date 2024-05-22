@@ -12,5 +12,5 @@ public class GameActivity : Entity
     public Guid ProductGuid { get; set; }
     [DsLong]
     public long ProductId { get; set; }
-    public Guid UserId { get; set; }
+    public Guid UserGuid { get; set; }
 }
