@@ -1,3 +1,4 @@
+using DibBase.Extensions;
 using DibBase.Infrastructure;
 using DibBaseSampleApi.Controllers;
 using DsLauncher.Infrastructure;
@@ -26,5 +27,5 @@ public class ProductController(Repository<Product> repository) : EntityControlle
     [HttpGet]
     [Route("developer/{id}")]
     public async Task<ActionResult<List<Product>>> GetByDeveloper(Guid id, int skip = 0, int take = 1000, CancellationToken ct = default) =>
-        (await repo.GetAll(restrict: x => x.DeveloperDsId.Guid == id, ct: ct)).Skip(skip).Take(take).ToList();
+        (await repo.GetAll(restrict: x => x.DeveloperId == id.Deobfuscate().Id, ct: ct)).Skip(skip).Take(take).ToList();
 }

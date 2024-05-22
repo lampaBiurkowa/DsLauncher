@@ -17,7 +17,7 @@ public class DsLauncherContext : DibContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=localhost;Database=DsLauncher;User Id=sa;Password=dev-DEV2;Encrypt=false;");
+        optionsBuilder.UseMySql("Server=localhost;Database=DsLauncher;User=root;Password=root;", new MySqlServerVersion(new Version(5, 7, 0)));
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

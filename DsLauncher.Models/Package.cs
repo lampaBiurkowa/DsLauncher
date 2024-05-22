@@ -1,4 +1,5 @@
 using DibBase.ModelBase;
+using DibBase.Obfuscation;
 
 namespace DsLauncher.Models;
 
@@ -6,8 +7,10 @@ public class Package : Entity, ISoftDelete, ITimeStamped
 {
     public DateTime Date { get; set; }
     public required Product Product { get; set; }
-    [DsId(nameof(Models.Product))]
-    public DsId ProductDsId { get; set; }
+    [DsGuid(nameof(Models.Product))]
+    public Guid ProductGuid { get; set; }
+    [DsLong]
+    public long ProductId { get; set; }
     public required string Description { get; set; }
     public required string ExePath { get; set; }
     public DateTime CreatedAt { get; set; }

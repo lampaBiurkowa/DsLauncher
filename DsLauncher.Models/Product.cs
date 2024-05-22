@@ -1,11 +1,14 @@
 ﻿using DibBase.ModelBase;
+using DibBase.Obfuscation;
 
 namespace DsLauncher.Models;
 
 public class Product : Entity, IAudited, ITimeStamped, ISoftDelete
 {
-    [DsId(nameof(Models.Developer))]
-    public DsId DeveloperDsId { get; set; }
+    [DsGuid(nameof(Models.Developer))]
+    public Guid DeveloperGuid { get; set; }
+    [DsLong]
+    public long DeveloperId { get; set; }
     public required Developer Developer { get; set; }
     public required string Description { get; set; }
     public required string Name { get; set; }

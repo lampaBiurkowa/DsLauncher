@@ -2962,9 +2962,12 @@ namespace DsLauncher.ApiClient
         [System.ComponentModel.DataAnnotations.Required]
         public Product Product { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("productDsId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public DsId ProductDsId { get; set; } = new DsId();
+        [Newtonsoft.Json.JsonProperty("productGuid", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.Guid ProductGuid { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("productId", Required = Newtonsoft.Json.Required.Always)]
+        public long ProductId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
@@ -2990,9 +2993,12 @@ namespace DsLauncher.ApiClient
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Product : Entity
     {
-        [Newtonsoft.Json.JsonProperty("developerDsId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public DsId DeveloperDsId { get; set; } = new DsId();
+        [Newtonsoft.Json.JsonProperty("developerGuid", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.Guid DeveloperGuid { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("developerId", Required = Newtonsoft.Json.Required.Always)]
+        public long DeveloperId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("developer", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required]
@@ -3027,15 +3033,6 @@ namespace DsLauncher.ApiClient
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class DsId
-    {
-        [Newtonsoft.Json.JsonProperty("guid", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public System.Guid Guid { get; set; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class Review : Entity
     {
         [Newtonsoft.Json.JsonProperty("content", Required = Newtonsoft.Json.Required.Always)]
@@ -3050,9 +3047,12 @@ namespace DsLauncher.ApiClient
         [System.ComponentModel.DataAnnotations.Required]
         public Product Product { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("productDsId", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public DsId ProductDsId { get; set; } = new DsId();
+        [Newtonsoft.Json.JsonProperty("productGuid", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public System.Guid ProductGuid { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("productId", Required = Newtonsoft.Json.Required.Always)]
+        public long ProductId { get; set; }
 
         [Newtonsoft.Json.JsonProperty("rate", Required = Newtonsoft.Json.Required.Always)]
         public int Rate { get; set; }
