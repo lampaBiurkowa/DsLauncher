@@ -9,7 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="DibBaseApi" Version="0.0.13" />
-    <PackageReference Include="DsAuth.TokenVerifier" Version="1.0.9" />
+    <PackageReference Include="DibSFTP" Version="1.0.2" />
+    <PackageReference Include="DsAuth.TokenVerifier" Version="1.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3" />
     <PackageReference Include="NSwag.AspNetCore" Version="14.0.7" />
     <PackageReference Include="NSwag.CodeGeneration" Version="14.0.7" />

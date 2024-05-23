@@ -101,7 +101,7 @@
       "templateDirectory": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "../DsLauncher.ApiClient/DsLauncherApiClient.cs",
+      "output": "../DsLauncher.ApiClient/DsLauncherClient.cs",
       "newLineBehavior": "Auto"
     }
   }
