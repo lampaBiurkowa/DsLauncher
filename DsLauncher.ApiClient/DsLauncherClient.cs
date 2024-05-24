@@ -541,6 +541,88 @@ namespace DsLauncher.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_GetUpdateAsync(System.Guid srcGuid, System.Guid dstGuid)
+        {
+            return Ndib_GetUpdateAsync(srcGuid, dstGuid, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_GetUpdateAsync(System.Guid srcGuid, System.Guid dstGuid, System.Threading.CancellationToken cancellationToken)
+        {
+            if (srcGuid == null)
+                throw new System.ArgumentNullException("srcGuid");
+
+            if (dstGuid == null)
+                throw new System.ArgumentNullException("dstGuid");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/octet-stream"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "Ndib/download/{srcGuid}/{dstguid}"
+                    urlBuilder_.Append("Ndib/download/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(srcGuid, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append('/');
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200 || status_ == 206)
+                        {
+                            var responseStream_ = response_.Content == null ? System.IO.Stream.Null : await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, null, response_);
+                            disposeClient_ = false; disposeResponse_ = false; // response and client are disposed by FileResponse
+                            return fileResponse_;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<FileResponse> News_GetAsync(int? skip, int? take)
         {
             return News_GetAsync(skip, take, System.Threading.CancellationToken.None);
@@ -2969,13 +3051,34 @@ namespace DsLauncher.ApiClient
         [Newtonsoft.Json.JsonProperty("productId", Required = Newtonsoft.Json.Required.Always)]
         public long ProductId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        [Newtonsoft.Json.JsonProperty("description", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Description { get; set; }
 
         [Newtonsoft.Json.JsonProperty("exePath", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string ExePath { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+        public string Version { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("isWin", Required = Newtonsoft.Json.Required.Always)]
+        public bool IsWin { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("isMac", Required = Newtonsoft.Json.Required.Always)]
+        public bool IsMac { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("isLinux", Required = Newtonsoft.Json.Required.Always)]
+        public bool IsLinux { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("ramMib", Required = Newtonsoft.Json.Required.Always)]
+        public int RamMib { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("cpuMhz", Required = Newtonsoft.Json.Required.Always)]
+        public int CpuMhz { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("diskMib", Required = Newtonsoft.Json.Required.Always)]
+        public int DiskMib { get; set; }
 
         [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
@@ -3018,6 +3121,9 @@ namespace DsLauncher.ApiClient
         [Newtonsoft.Json.JsonProperty("tags", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Tags { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("imageCount", Required = Newtonsoft.Json.Required.Always)]
+        public int ImageCount { get; set; }
 
         [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]

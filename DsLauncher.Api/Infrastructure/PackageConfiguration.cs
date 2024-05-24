@@ -6,7 +6,7 @@ public class PackageEntityTypeConfiguration : IEntityTypeConfiguration<Package>
 {
     public void Configure(EntityTypeBuilder<Package> builder)
     {
-        builder.Property(x => x.Description).IsRequired();
         builder.Property(x => x.ExePath).IsRequired();
+        builder.Property(x => x.Version).IsRequired();
     }
 }

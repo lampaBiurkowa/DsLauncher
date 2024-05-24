@@ -13,7 +13,8 @@ public class Product : Entity, IAudited, ITimeStamped, ISoftDelete
     public required string Description { get; set; }
     public required string Name { get; set; }
     public float Price { get; set; }
-    public required string Tags {get; set;}
+    public required string Tags { get; set; }
+    public int ImageCount { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public bool IsDeleted { get; set; }

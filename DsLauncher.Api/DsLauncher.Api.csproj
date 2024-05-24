@@ -4,13 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>ds_identity</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DibBaseApi" Version="0.0.13" />
     <PackageReference Include="DibSFTP" Version="1.0.2" />
-    <PackageReference Include="DsAuth.TokenVerifier" Version="1.0.14" />
+    <PackageReference Include="DsIdentity.ApiClient" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3" />
     <PackageReference Include="NSwag.AspNetCore" Version="14.0.7" />
     <PackageReference Include="NSwag.CodeGeneration" Version="14.0.7" />
@@ -22,6 +21,7 @@
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="DiffPlex" Version="1.5.7" />
   </ItemGroup>
 
   <ItemGroup>

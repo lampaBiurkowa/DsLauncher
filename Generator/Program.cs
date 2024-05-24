@@ -37,6 +37,8 @@ public class Generator
         return result.ToString();
     }
 
+    public static bool GenerateBool() => random.Next(2) == 1;
+
     public static string GenerateString(int length = 20, string characterSet = DefaultCharacterSet)
     {
         if (length <= 0)
@@ -84,7 +86,7 @@ public class Generator
         Developer = developer,
         Description = LoremIpsum(),
         Tags = GenerateString(),
-        Price = GenerateInt()
+        Price = GenerateInt(),
     };
 
     public static Review GenerateReview(Product product) => new() 
@@ -117,7 +119,14 @@ public class Generator
         ExePath = exeName ?? GenerateString(),
         Date = DateTime.Now,
         Product = product,
-        Description = LoremIpsum()
+        Description = LoremIpsum(),
+        Version = GenerateString(),
+        IsMac = GenerateBool(),
+        IsWin = GenerateBool(),
+        IsLinux = GenerateBool(),
+        RamMib = (uint)GenerateInt(),
+        DiskMib = (uint)GenerateInt(),
+        CpuMhz = (uint)GenerateInt()
     };
 
     public static void Main()
