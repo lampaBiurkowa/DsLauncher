@@ -1,5 +1,6 @@
 using DibBase.Extensions;
 using DibBase.Infrastructure;
+using DibBaseApi;
 using DibBaseSampleApi.Controllers;
 using DsIdentity.ApiClient;
 using DsLauncher.Models;
@@ -38,4 +39,13 @@ public class PackageController(Repository<Package> repository) : EntityControlle
         return Ok();
     }
 
+    [HttpGet("latest/{productId}")]
+    public async Task<ActionResult<Package?>> GetLatest(Guid productId, CancellationToken ct)
+    {
+        var result = (await repo.GetAll(restrict: x => x.ProductId == productId.Deobfuscate().Id, ct: ct)).MaxBy(x => x.CreatedAt);
+        if (result == null) return Ok(null);
+
+        IdHelper.HidePrivateId(result);
+        return Ok(result);
+    }
 }
