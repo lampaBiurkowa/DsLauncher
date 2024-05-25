@@ -6,7 +6,7 @@ namespace DsLauncher.Models;
 public class Review : Entity, ISoftDelete, ITimeStamped
 {
     public required string Content { get; set; }
-    public required Product Product { get; set; }
+    public Product? Product { get; set; }
     [DsGuid(nameof(Models.Product))]
     public Guid ProductGuid { get; set; }
     [DsLong]
