@@ -57,6 +57,11 @@ public class ReviewController(Repository<Review> repository) : EntityController<
     public async Task<ActionResult<int[]>> GetByProduct(Guid id, CancellationToken ct = default)
     {
         var reviews = (await repo.GetAll(restrict: x => x.ProductId == id.Deobfuscate().Id, ct: ct)).ToList();
-        return reviews.GroupBy(x => x.Rate).OrderBy(g => g.Key).Select(g => g.Count()).ToArray();
+
+        int[] rateCounts = new int[5];
+        foreach (var review in reviews)
+            rateCounts[review.Rate - 1]++;        
+
+        return rateCounts;
     }
 }
