@@ -69,7 +69,7 @@ public class Generator
         Name = GenerateString(),
         Description = LoremIpsum(),
         Website = GenerateString(),
-        UserGuid = GenerateGuid()
+        UserGuids = [GenerateGuid(), GenerateGuid()]
     };
 
     public static News GenerateNews() => new() 
@@ -91,11 +91,10 @@ public class Generator
 
     public static Review GenerateReview(Product product) => new() 
     {
-        Date = DateTime.Now,
         Product = product,
         Content = LoremIpsum(),
-        Rate = GenerateInt(),
-        UserId = GenerateInt()
+        Rate = GenerateInt(5) + 1,
+        UserGuid = GenerateGuid()
     };
 
     public static Purchase GeneratePurchase(Product product) => new() 
@@ -117,9 +116,7 @@ public class Generator
     public static Package GeneratePackage(Product product, string? exeName = null) => new() 
     {
         ExePath = exeName ?? GenerateString(),
-        Date = DateTime.Now,
         Product = product,
-        Description = LoremIpsum(),
         Version = GenerateString(),
         IsMac = GenerateBool(),
         IsWin = GenerateBool(),
@@ -137,7 +134,13 @@ public class Generator
 
         for (int i = 0; i < 10; i++)
             db.Developer.Add(GenerateDeveloper());
-        db.Developer.Add(new() { Name = "Cardboard Inc", Description = "cardboard",  Website = "www.example.com", UserGuid = GenerateGuid()});
+        db.Developer.Add(new()
+        {
+            Name = "Cardboard Inc",
+            Description = "cardboard",
+            Website = "www.example.com",
+            UserGuids = [GenerateGuid(), GenerateGuid()]
+        });
         db.SaveChanges();
 
         for (int i = 0; i < 10; i++)

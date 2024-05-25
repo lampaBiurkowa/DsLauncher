@@ -9,7 +9,7 @@ public class Product : Entity, IAudited, ITimeStamped, ISoftDelete
     public Guid DeveloperGuid { get; set; }
     [DsLong]
     public long DeveloperId { get; set; }
-    public required Developer Developer { get; set; }
+    public Developer? Developer { get; set; }
     public required string Description { get; set; }
     public required string Name { get; set; }
     public float Price { get; set; }

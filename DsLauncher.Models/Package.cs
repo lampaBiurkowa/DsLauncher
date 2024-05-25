@@ -5,13 +5,11 @@ namespace DsLauncher.Models;
 
 public class Package : Entity, ISoftDelete, ITimeStamped
 {
-    public DateTime Date { get; set; }
-    public required Product Product { get; set; }
+    public Product? Product { get; set; }
     [DsGuid(nameof(Models.Product))]
     public Guid ProductGuid { get; set; }
     [DsLong]
     public long ProductId { get; set; }
-    public string? Description { get; set; }
     public required string ExePath { get; set; }
     public required string Version { get; set; }
     public bool IsWin { get; set; }

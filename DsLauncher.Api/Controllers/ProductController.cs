@@ -1,7 +1,7 @@
 using DibBase.Extensions;
 using DibBase.Infrastructure;
 using DibBaseSampleApi.Controllers;
-using DsLauncher.Infrastructure;
+using DsIdentity.ApiClient;
 using DsLauncher.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +18,22 @@ public class ProductController(Repository<Product> repository) : EntityControlle
 
     [Authorize]
     [HttpPut]
-    public override async Task<ActionResult<Guid>> Update(Product entity, CancellationToken ct) => await base.Update(entity, ct);
+    public override async Task<ActionResult<Guid>> Update(Product entity, CancellationToken ct)
+    {
+        if (!HttpContext.IsUser(entity.DeveloperGuid)) return Unauthorized();
+        return await base.Update(entity, ct);
+    }
 
     [Authorize]
     [HttpDelete]
-    public override async Task<IActionResult> Delete(Guid id, CancellationToken ct) => await base.Delete(id, ct);
+    public override async Task<IActionResult> Delete(Guid id, CancellationToken ct)
+    {
+        var item = await repo.GetById(id.Deobfuscate().Id, ct: ct);
+        if (item == null) return Problem();
+        if (!HttpContext.IsUser(item.DeveloperGuid)) return Unauthorized();
+
+        return await base.Delete(id, ct);
+    }
 
     [HttpGet]
     [Route("developer/{id}")]

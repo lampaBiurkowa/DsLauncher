@@ -7,9 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DibBaseApi" Version="0.0.13" />
+    <PackageReference Include="DibBaseApi" Version="0.0.16" />
     <PackageReference Include="DibSFTP" Version="1.0.2" />
-    <PackageReference Include="DsIdentity.ApiClient" Version="1.0.1" />
+    <PackageReference Include="DsIdentity.ApiClient" Version="1.0.3" />
+    <PackageReference Include="DsStorage.ApiClient" Version="1.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3" />
     <PackageReference Include="NSwag.AspNetCore" Version="14.0.7" />
     <PackageReference Include="NSwag.CodeGeneration" Version="14.0.7" />

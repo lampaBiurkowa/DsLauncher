@@ -4,12 +4,39 @@ using DsLauncher.Infrastructure;
 using DsLauncher.Models;
 using DsIdentity.ApiClient;
 using Microsoft.EntityFrameworkCore;
+using DsStorage.ApiClient;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using DsLauncher.Api.Ndib;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c => {
+    var jwtSecurityScheme = new OpenApiSecurityScheme
+    {
+        BearerFormat = "JWT",
+        Name = "JWT Authentication",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = JwtBearerDefaults.AuthenticationScheme,
+        Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+
+        Reference = new OpenApiReference
+        {
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme
+        }
+    };
+
+    c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { jwtSecurityScheme, Array.Empty<string>() }
+    });
+});
 builder.Services.AddSwaggerDocument();
 
 builder.Services.AddDbContext<DbContext, DsLauncherContext>();
@@ -25,7 +52,9 @@ foreach (var assembly in assemblies)
         builder.Services.AddScoped(repositoryType);
     }
 }
+builder.Services.AddScoped<NdibService>();
 builder.Configuration.AddDsIdentity(builder.Services);
+builder.Configuration.AddDsStorage(builder.Services);
 builder.Services.AddAuthorization();
 var app = builder.Build();
 

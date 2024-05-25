@@ -1,6 +1,9 @@
+using DibBase.Extensions;
 using DibBase.Infrastructure;
 using DibBaseSampleApi.Controllers;
+using DsIdentity.ApiClient;
 using DsLauncher.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DsLauncher.Api;
@@ -9,4 +12,30 @@ namespace DsLauncher.Api;
 [Route("[controller]")]
 public class PackageController(Repository<Package> repository) : EntityController<Package>(repository)
 {
+    [Authorize]
+    [HttpPost]
+    public override async Task<ActionResult<Guid>> Add(Package entity, CancellationToken ct) => await base.Add(entity, ct);
+
+    [Authorize]
+    [HttpPut]
+    public override async Task<ActionResult<Guid>> Update(Package entity, CancellationToken ct)
+    {
+        var item = await repo.GetById(entity.Guid.Deobfuscate().Id, [x => x.Product], ct);
+        if (item == null) return Problem();
+        if (!HttpContext.IsUser(item.Product.DeveloperGuid)) return Unauthorized();
+        return await base.Update(entity, ct);
+    }
+
+    [Authorize]
+    [HttpDelete]
+    public override async Task<IActionResult> Delete(Guid id, CancellationToken ct)
+    {
+        var item = await repo.GetById(id.Deobfuscate().Id, [x => x.Product], ct);
+        if (item == null) return Problem();
+        if (!HttpContext.IsUser(item.Product.DeveloperGuid)) return Unauthorized();
+        
+        await base.Delete(id, ct);
+        return Ok();
+    }
+
 }

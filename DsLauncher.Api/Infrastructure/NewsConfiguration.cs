@@ -2,6 +2,8 @@ using DsLauncher.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+namespace DsLauncher.Api.Infrastructure;
+
 public class NewsEntityTypeConfiguration : IEntityTypeConfiguration<News>
 {
     public void Configure(EntityTypeBuilder<News> builder)
