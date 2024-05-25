@@ -11,7 +11,7 @@ public class Review : Entity, ISoftDelete, ITimeStamped
     public Guid ProductGuid { get; set; }
     [DsLong]
     public long ProductId { get; set; }
-    public int Rate { get; set; }
+    public required int Rate { get; set; }
     public Guid UserGuid { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
