@@ -567,10 +567,11 @@ namespace DsLauncher.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "Ndib/download/{srcGuid}/{dstguid}"
+                    // Operation Path: "Ndib/download/{srcGuid}/{dstGuid}"
                     urlBuilder_.Append("Ndib/download/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(srcGuid, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append('/');
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(dstGuid, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -780,14 +781,14 @@ namespace DsLauncher.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_UploadNewAsync(FileParameter file)
+        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_UploadNewAsync(FileParameter binFile, FileParameter metadataFile)
         {
-            return Ndib_UploadNewAsync(file, System.Threading.CancellationToken.None);
+            return Ndib_UploadNewAsync(binFile, metadataFile, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_UploadNewAsync(FileParameter file, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_UploadNewAsync(FileParameter binFile, FileParameter metadataFile, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -800,14 +801,24 @@ namespace DsLauncher.ApiClient
                     content_.Headers.Remove("Content-Type");
                     content_.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary_);
 
-                    if (file == null)
-                        throw new System.ArgumentNullException("file");
+                    if (binFile == null)
+                        throw new System.ArgumentNullException("binFile");
                     else
                     {
-                        var content_file_ = new System.Net.Http.StreamContent(file.Data);
-                        if (!string.IsNullOrEmpty(file.ContentType))
-                            content_file_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(file.ContentType);
-                        content_.Add(content_file_, "file", file.FileName ?? "file");
+                        var content_binFile_ = new System.Net.Http.StreamContent(binFile.Data);
+                        if (!string.IsNullOrEmpty(binFile.ContentType))
+                            content_binFile_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(binFile.ContentType);
+                        content_.Add(content_binFile_, "binFile", binFile.FileName ?? "binFile");
+                    }
+
+                    if (metadataFile == null)
+                        throw new System.ArgumentNullException("metadataFile");
+                    else
+                    {
+                        var content_metadataFile_ = new System.Net.Http.StreamContent(metadataFile.Data);
+                        if (!string.IsNullOrEmpty(metadataFile.ContentType))
+                            content_metadataFile_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(metadataFile.ContentType);
+                        content_.Add(content_metadataFile_, "metadataFile", metadataFile.FileName ?? "metadataFile");
                     }
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
@@ -869,14 +880,14 @@ namespace DsLauncher.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_UploadUpdateAsync(System.Guid productGuid, FileParameter file)
+        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_UpdateMetadataAsync(System.Guid productGuid, FileParameter metadataFile)
         {
-            return Ndib_UploadUpdateAsync(productGuid, file, System.Threading.CancellationToken.None);
+            return Ndib_UpdateMetadataAsync(productGuid, metadataFile, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_UploadUpdateAsync(System.Guid productGuid, FileParameter file, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_UpdateMetadataAsync(System.Guid productGuid, FileParameter metadataFile, System.Threading.CancellationToken cancellationToken)
         {
             if (productGuid == null)
                 throw new System.ArgumentNullException("productGuid");
@@ -892,14 +903,14 @@ namespace DsLauncher.ApiClient
                     content_.Headers.Remove("Content-Type");
                     content_.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary_);
 
-                    if (file == null)
-                        throw new System.ArgumentNullException("file");
+                    if (metadataFile == null)
+                        throw new System.ArgumentNullException("metadataFile");
                     else
                     {
-                        var content_file_ = new System.Net.Http.StreamContent(file.Data);
-                        if (!string.IsNullOrEmpty(file.ContentType))
-                            content_file_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(file.ContentType);
-                        content_.Add(content_file_, "file", file.FileName ?? "file");
+                        var content_metadataFile_ = new System.Net.Http.StreamContent(metadataFile.Data);
+                        if (!string.IsNullOrEmpty(metadataFile.ContentType))
+                            content_metadataFile_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(metadataFile.ContentType);
+                        content_.Add(content_metadataFile_, "metadataFile", metadataFile.FileName ?? "metadataFile");
                     }
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
@@ -907,8 +918,8 @@ namespace DsLauncher.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "Ndib/upload/{productGuid}"
-                    urlBuilder_.Append("Ndib/upload/");
+                    // Operation Path: "Ndib/update-metadata/{productGuid}"
+                    urlBuilder_.Append("Ndib/update-metadata/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(productGuid, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
@@ -2423,6 +2434,82 @@ namespace DsLauncher.ApiClient
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
+                            return objectResponse_.Object;
+                        }
+                        else
+                        {
+                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (disposeResponse_)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (disposeClient_)
+                    client_.Dispose();
+            }
+        }
+
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<System.Guid?> Product_GetIdAsync(string name)
+        {
+            return Product_GetIdAsync(name, System.Threading.CancellationToken.None);
+        }
+
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <exception cref="ApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<System.Guid?> Product_GetIdAsync(string name, System.Threading.CancellationToken cancellationToken)
+        {
+            if (name == null)
+                throw new System.ArgumentNullException("name");
+
+            var client_ = _httpClient;
+            var disposeClient_ = false;
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+
+                    var urlBuilder_ = new System.Text.StringBuilder();
+                
+                    // Operation Path: "Product/get-id/{name}"
+                    urlBuilder_.Append("Product/get-id/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(name, System.Globalization.CultureInfo.InvariantCulture)));
+
+                    PrepareRequest(client_, request_, urlBuilder_);
+
+                    var url_ = urlBuilder_.ToString();
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+
+                    PrepareRequest(client_, request_, url_);
+
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    var disposeResponse_ = true;
+                    try
+                    {
+                        var headers_ = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>>();
+                        foreach (var item_ in response_.Headers)
+                            headers_[item_.Key] = item_.Value;
+                        if (response_.Content != null && response_.Content.Headers != null)
+                        {
+                            foreach (var item_ in response_.Content.Headers)
+                                headers_[item_.Key] = item_.Value;
+                        }
+
+                        ProcessResponse(client_, response_);
+
+                        var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Guid?>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else

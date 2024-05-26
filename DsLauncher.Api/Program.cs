@@ -8,6 +8,9 @@ using DsStorage.ApiClient;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DsLauncher.Api.Ndib;
+using FluentFTP;
+using DsLauncher.Api;
+using DsSftpLib;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -38,7 +41,7 @@ builder.Services.AddSwaggerGen(c => {
     });
 });
 builder.Services.AddSwaggerDocument();
-
+builder.Configuration.AddDsSftpLib(builder.Services, true);
 builder.Services.AddDbContext<DbContext, DsLauncherContext>();
 var entityTypes = new List<Type>();
 var assemblies = AppDomain.CurrentDomain.GetAssemblies();

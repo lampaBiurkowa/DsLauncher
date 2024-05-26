@@ -8,11 +8,15 @@ public static class PathsResolver
     const string NDIB_PATH = "ndib";
     const string PATCH_PATH = "patch";
     public const string RESULT_FILE = "result.zip";
+    public const string HASH_FILE = "hash.json";
+    public const string DELETED_FILES_FILE = "deleted.txt";
 
-    public static string GetVersionPath(Package package) => $"{NDIB_PATH}/{package.ProductGuid}/{package.Obfuscate()}";
+    public static string GetVersionPath(Guid productGuid, Guid packageGuid) => $"{NDIB_PATH}/{productGuid}/{packageGuid}";
+    public static string GetVersionHash(Package package) => $"{NDIB_PATH}/{package.ProductGuid}/{package.Obfuscate()}-{HASH_FILE}";
     public static string GetPatchVersionPath(Package srcPackage, Package dstPackage) =>
-        $"{NDIB_PATH}/{srcPackage.ProductGuid}/{PATCH_PATH}/{srcPackage.Obfuscate()}-{dstPackage.Obfuscate()}";
+        $"{NDIB_PATH}/{srcPackage.ProductGuid}/{srcPackage.Obfuscate()}-{dstPackage.Obfuscate()}";
     public static string GetPatchDirectoryPath(Guid productGuid) => $"{NDIB_PATH}/{productGuid}/{PATCH_PATH}";
     public static string GetPatchResultZipPath(Package srcPackage, Package dstPackage) =>
-        $"{NDIB_PATH}/{srcPackage.ProductGuid}/{PATCH_PATH}/{srcPackage.Obfuscate()}-{dstPackage.Obfuscate()}/{RESULT_FILE}";
+        $"{GetPatchVersionPath(srcPackage, dstPackage)}-{RESULT_FILE}";
+    public static string GetWholeProductZipPath(Guid productGuid, Guid packageGuid) => $"{NDIB_PATH}/{productGuid}/{packageGuid}.zip";
 }

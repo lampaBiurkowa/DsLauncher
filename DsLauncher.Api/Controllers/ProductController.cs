@@ -39,4 +39,10 @@ public class ProductController(Repository<Product> repository) : EntityControlle
     [Route("developer/{id}")]
     public async Task<ActionResult<List<Product>>> GetByDeveloper(Guid id, int skip = 0, int take = 1000, CancellationToken ct = default) =>
         (await repo.GetAll(restrict: x => x.DeveloperId == id.Deobfuscate().Id, ct: ct)).Skip(skip).Take(take).ToList();
+
+
+    [HttpGet]
+    [Route("get-id/{name}")]
+    public async Task<ActionResult<Guid?>> GetId(string name, CancellationToken ct = default) =>
+        (await repo.GetAll(restrict: x => x.Name == name, ct: ct)).FirstOrDefault()?.Guid;
 }

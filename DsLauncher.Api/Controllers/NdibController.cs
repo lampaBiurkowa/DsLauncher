@@ -16,14 +16,14 @@ public class NdibController(NdibService ndibService, Repository<Package> package
     readonly Repository<Package> packageRepo = packageRepo;
     readonly Repository<Product> productRepo = productRepo;
 
-    [HttpGet("download/{srcGuid}/{dstguid}")]
+    [HttpGet("download/{srcGuid}/{dstGuid}")]
     public async Task<ActionResult> GetUpdate(Guid srcGuid, Guid dstGuid, CancellationToken ct)
     {
         var srcPackage = await packageRepo.GetById(srcGuid.Deobfuscate().Id, ct: ct);
         var dstPackage = await packageRepo.GetById(dstGuid.Deobfuscate().Id, ct: ct);
         if (srcPackage == null || dstPackage == null) return Problem();
 
-        return File(UpdateBuilder.BuildUpdate(srcPackage, dstPackage), "application/zip", PathsResolver.RESULT_FILE);
+        return File(await ndibService.BuildUpdate(srcPackage, dstPackage, ct), "application/zip", PathsResolver.RESULT_FILE);
     }
 
 
@@ -36,7 +36,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         var latestPackage = (await packageRepo.GetAll(restrict: x => x.ProductId == srcPackage.ProductGuid.Deobfuscate().Id, ct: ct)).MaxBy(x => x.CreatedAt);
         if (latestPackage == null) return Problem();
 
-        return File(UpdateBuilder.BuildUpdate(srcPackage, latestPackage), "application/zip", PathsResolver.RESULT_FILE);
+        return File(await ndibService.BuildUpdate(srcPackage, latestPackage, ct), "application/zip", PathsResolver.RESULT_FILE);
     }
 
     [HttpGet("download/{productGuid}")]
@@ -45,46 +45,56 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         var latestPackage = (await packageRepo.GetAll(restrict: x => x.ProductId == productGuid.Deobfuscate().Id, ct: ct)).MaxBy(x => x.CreatedAt);
         if (latestPackage == null) return Problem();
         
-        var zipPath = $"{PathsResolver.GetVersionPath(latestPackage)}.zip";
-        ZipFile.CreateFromDirectory(PathsResolver.GetVersionPath(latestPackage), zipPath);
-        return File(System.IO.File.OpenRead(zipPath), "application/zip", PathsResolver.RESULT_FILE);
+        return File(ndibService.DownloadWholeProduct(productGuid, latestPackage.Guid), "application/zip", PathsResolver.RESULT_FILE);
     }
 
     [HttpPost("upload")]
-    public async Task<ActionResult> UploadNew(IFormFile file, CancellationToken ct)
+    public async Task<ActionResult> UploadNew(IFormFile binFile, IFormFile metadataFile, CancellationToken ct)
     {
-        if (file == null || file.Length == 0) return BadRequest("No file uploaded.");
+        if (binFile == null || metadataFile == null) return BadRequest("2 files expected");
 
         var developer = await ndibService.GetUserDeveloper(HttpContext.GetUserGuid(), ct);
         if (developer == null) return Unauthorized();
 
-        var temporaryPath = Guid.NewGuid().ToString();
-        var ndibData = await ndibService.ExtractZipToTemp(file, temporaryPath, ct);
+        var metadataTempPath = Guid.NewGuid().ToString();
+        var ndibData = await ndibService.ExtractZipToTemp(metadataFile, metadataTempPath, ct);
         if (ndibData == null) return Problem();
 
-        var newPackage = await ndibService.PersistPackage(ndibData, developer.Id, ct: ct);
-        await ndibService.UploadImagesToStorage(ndibData, temporaryPath, newPackage.ProductGuid, ct);
-        ndibService.SaveVersionFiles(temporaryPath, newPackage);
+        var binTempPath = Guid.NewGuid().ToString();
+        await ndibService.ExtractZipToTemp(binFile, binTempPath, ct);
+        
+        var product = (await productRepo.GetAll(restrict: x => x.Name == ndibData.Name, expand: [x => x.Developer!], ct: ct)).FirstOrDefault();
+        Package newPackage;
+        if (product == null)
+            newPackage = await ndibService.PersistPackage(ndibData, developer.Id, ct);
+        else if (!ndibService.UserIsFromDeveloper(HttpContext.GetUserGuid(), product.Developer!))
+            return Unauthorized();
+        else
+            newPackage = await ndibService.PersistPackage(ndibData, product, ct);
+
+        await ndibService.UploadImagesToStorage(ndibData, metadataTempPath, newPackage.ProductGuid, ct);
+        ndibService.SaveVersionFiles(binTempPath, newPackage);
 
         return Ok();
     }
 
-    [HttpPost("upload/{productGuid}")]
-    public async Task<ActionResult> UploadUpdate(Guid productGuid, IFormFile file, CancellationToken ct)
+    [HttpPost("update-metadata/{productGuid}")]
+    public async Task<ActionResult> UpdateMetadata(Guid productGuid, IFormFile metadataFile, CancellationToken ct)
     {
-        if (file == null || file.Length == 0) return BadRequest("No file uploaded.");
+        if (metadataFile == null || metadataFile.Length == 0) return BadRequest("No file uploaded.");
 
-        var product = await productRepo.GetById(productGuid.Deobfuscate().Id, expand: [x => x.Developer!], ct: ct);
+        var tempPath = Guid.NewGuid().ToString();
+        var ndibData = await ndibService.ExtractZipToTemp(metadataFile, tempPath, ct);
+        if (ndibData == null) return Problem();
+
+        var product = await productRepo.GetById(productGuid.Deobfuscate().Id, [x => x.Developer!], ct);
         if (product == null) return Problem();
         if (!ndibService.UserIsFromDeveloper(HttpContext.GetUserGuid(), product.Developer!)) return Unauthorized();
 
-        var temporaryPath = Guid.NewGuid().ToString();
-        var ndibData = await ndibService.ExtractZipToTemp(file, temporaryPath, ct);
-        if (ndibData == null) return Problem();
-
-        var newPackage = await ndibService.PersistPackage(ndibData, product.Developer!.Id, product.Id, ct);
-        await ndibService.UploadImagesToStorage(ndibData, temporaryPath, newPackage.ProductGuid, ct);
-        ndibService.SaveVersionFiles(temporaryPath, newPackage);
+        ndibService.ApplyNdibDataToProduct(product, ndibData);
+        await productRepo.UpdateAsync(product, ct);
+        await productRepo.CommitAsync(ct);
+        await ndibService.UploadImagesToStorage(ndibData, tempPath, productGuid, ct);
 
         return Ok();
     }
