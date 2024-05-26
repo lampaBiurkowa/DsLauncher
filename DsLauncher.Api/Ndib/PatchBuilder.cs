@@ -44,7 +44,7 @@ public static class PatchBuilder
             File.Copy(srcPath, dstPath, true);
         }
 
-        await File.WriteAllLinesAsync(deletedFilesList, deletedFiles, ct);
+        await File.WriteAllLinesAsync($"{patchPath}/{deletedFilesList}", deletedFiles, ct);
     }
 
     static Dictionary<string, string> GetFileHashes(string directory)
