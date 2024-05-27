@@ -140,14 +140,13 @@ public class NdibService(
         new()
         {
             Product = product,
-            ExePath = ndib.ExePath,
             Version = ndib.Version,
-            IsWin = ndib.Windows,
-            IsLinux = ndib.Linux,
-            IsMac = ndib.Mac,
-            RamMib = ndib.RamMib,
-            CpuMhz = ndib.CpuMhz,
-            DiskMib = ndib.DiskMib
+            WindowsExePath = ndib.WindowsExePath,
+            LinuxExePath = ndib.LinuxExePath,
+            MacExePath = ndib.MacExePath,
+            MinRamMib = ndib.MinRamMib,
+            MinCpu = ndib.MinCpu,
+            MinDiskMib = ndib.MinDiskMib
         };
 
     

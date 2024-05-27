@@ -3658,31 +3658,27 @@ namespace DsLauncher.ApiClient
         [Newtonsoft.Json.JsonProperty("productId", Required = Newtonsoft.Json.Required.Always)]
         public long ProductId { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("exePath", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
-        public string ExePath { get; set; }
+        [Newtonsoft.Json.JsonProperty("windowsExePath", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string WindowsExePath { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("linuxExePath", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string LinuxExePath { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("macExePath", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string MacExePath { get; set; }
 
         [Newtonsoft.Json.JsonProperty("version", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public string Version { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("isWin", Required = Newtonsoft.Json.Required.Always)]
-        public bool IsWin { get; set; }
+        [Newtonsoft.Json.JsonProperty("minRamMib", Required = Newtonsoft.Json.Required.Always)]
+        public int MinRamMib { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("isMac", Required = Newtonsoft.Json.Required.Always)]
-        public bool IsMac { get; set; }
+        [Newtonsoft.Json.JsonProperty("minCpu", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string MinCpu { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("isLinux", Required = Newtonsoft.Json.Required.Always)]
-        public bool IsLinux { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("ramMib", Required = Newtonsoft.Json.Required.Always)]
-        public int RamMib { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("cpuMhz", Required = Newtonsoft.Json.Required.Always)]
-        public int CpuMhz { get; set; }
-
-        [Newtonsoft.Json.JsonProperty("diskMib", Required = Newtonsoft.Json.Required.Always)]
-        public int DiskMib { get; set; }
+        [Newtonsoft.Json.JsonProperty("minDiskMib", Required = Newtonsoft.Json.Required.Always)]
+        public int MinDiskMib { get; set; }
 
         [Newtonsoft.Json.JsonProperty("createdAt", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]

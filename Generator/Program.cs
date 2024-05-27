@@ -3,6 +3,22 @@ using DsLauncher.Infrastructure;
 using DsLauncher.Models;
 public class Generator
 {
+    static List<Guid> userGuids = [
+        Guid.Parse("9dfe9b8f-4513-7c23-0100-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0200-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0300-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0400-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0500-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0600-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0700-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0800-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0900-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0a00-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0b00-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0c00-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0d00-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0e00-000000000000")
+    ];
     private static readonly Random random = new Random();
     private const string DefaultCharacterSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     static string LoremIpsum(int minWords = 10, int maxWords= 20,
@@ -69,7 +85,7 @@ public class Generator
         Name = GenerateString(),
         Description = LoremIpsum(),
         Website = GenerateString(),
-        UserGuids = [GenerateGuid(), GenerateGuid()]
+        UserGuids = [userGuids[random.Next(userGuids.Count)], userGuids[random.Next(userGuids.Count)]]
     };
 
     public static News GenerateNews() => new() 
@@ -94,7 +110,7 @@ public class Generator
         Product = product,
         Content = LoremIpsum(),
         Rate = GenerateInt(5) + 1,
-        UserGuid = GenerateGuid()
+        UserGuid = userGuids[random.Next(userGuids.Count)]
     };
 
     public static Purchase GeneratePurchase(Product product) => new() 
@@ -102,7 +118,7 @@ public class Generator
         Date = DateTime.Now,
         Product = product,
         Value = GenerateInt(),
-        UserGuid = GenerateGuid()
+        UserGuid = userGuids[random.Next(userGuids.Count)]
     };
 
     public static GameActivity GenerateGameActivity(Product product) => new() 
@@ -110,20 +126,19 @@ public class Generator
         StartDate = DateTime.Now,
         EndDate = DateTime.Now.AddMinutes(5),
         Product = product,
-        UserGuid = GenerateGuid()
+        UserGuid = userGuids[random.Next(userGuids.Count)]
     };
 
     public static Package GeneratePackage(Product product, string? exeName = null) => new() 
     {
-        ExePath = exeName ?? GenerateString(),
+        WindowsExePath = exeName ?? GenerateString(),
+        LinuxExePath = GenerateBool() ? GenerateString() : null,
+        MacExePath = GenerateBool() ? GenerateString() : null,
         Product = product,
         Version = GenerateString(),
-        IsMac = GenerateBool(),
-        IsWin = GenerateBool(),
-        IsLinux = GenerateBool(),
-        RamMib = (uint)GenerateInt(),
-        DiskMib = (uint)GenerateInt(),
-        CpuMhz = (uint)GenerateInt()
+        MinRamMib = (uint)GenerateInt(),
+        MinDiskMib = (uint)GenerateInt(),
+        MinCpu = GenerateString()
     };
 
     public static void Main()
@@ -139,7 +154,7 @@ public class Generator
             Name = "Cardboard Inc",
             Description = "cardboard",
             Website = "www.example.com",
-            UserGuids = [GenerateGuid(), GenerateGuid()]
+            UserGuids = [userGuids[random.Next(userGuids.Count)], userGuids[0]] // d d
         });
         db.SaveChanges();
 

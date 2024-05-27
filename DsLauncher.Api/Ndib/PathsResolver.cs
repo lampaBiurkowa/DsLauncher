@@ -10,6 +10,9 @@ public static class PathsResolver
     public const string RESULT_FILE = "result.zip";
     public const string HASH_FILE = "hash.json";
     public const string DELETED_FILES_FILE = "deleted.txt";
+    public const string WINDOWS_FOLDER_NAME = "win";
+    public const string LINUX_FOLDER_NAME = "linux";
+    public const string MAC_FOLDER_NAME = "mac";
 
     public static string GetVersionPath(Guid productGuid, Guid packageGuid) => $"{NDIB_PATH}/{productGuid}/{packageGuid}";
     public static string GetVersionHash(Package package) => $"{NDIB_PATH}/{package.ProductGuid}/{package.Obfuscate()}-{HASH_FILE}";
