@@ -67,17 +67,27 @@ public class NdibService(
             await UploadFileToStorage(originalPath, $"{productGuid}", fileName, ct);
         }
 
-        await UploadFileToStorage(Path.Combine(tempPath, ndibData.Background), $"{productGuid}", $"bg{Path.GetExtension(ndibData.Background)}", ct);
-        await UploadFileToStorage(Path.Combine(tempPath, ndibData.Icon), $"{productGuid}", $"icon{Path.GetExtension(ndibData.Icon)}", ct);
+        if (!string.IsNullOrWhiteSpace(ndibData.Background))
+            await UploadFileToStorage(Path.Combine(tempPath, ndibData.Background), $"{productGuid}", $"bg{Path.GetExtension(ndibData.Background)}", ct);
+        
+        if (!string.IsNullOrWhiteSpace(ndibData.Icon))
+            await UploadFileToStorage(Path.Combine(tempPath, ndibData.Icon), $"{productGuid}", $"icon{Path.GetExtension(ndibData.Icon)}", ct);
         Directory.Delete(tempPath, true);
     }
 
-    public void SaveVersionFiles(string tempPath, Package newPackage)
+    void SaveVersionFiles(string tempPath, Package newPackage, Platform? platform = null)
     {   
-        sftpClient.UploadDirectory(tempPath, PathsResolver.GetVersionPath(newPackage.ProductGuid, newPackage.Guid));
+        sftpClient.UploadDirectory(tempPath, PathsResolver.GetVersionPath(newPackage.ProductGuid, newPackage.Guid, platform));
         var hash = JsonConvert.SerializeObject(GetFileHashes(tempPath));
-        sftpClient.UploadStream(GenerateStreamFromString(hash), PathsResolver.GetVersionHash(newPackage));
+        sftpClient.UploadStream(GenerateStreamFromString(hash), PathsResolver.GetVersionHash(newPackage, platform));
         Directory.Delete(tempPath, true);
+    }
+
+    public async Task UploadVersion(IFormFile file, Package package, Platform? platform = null, CancellationToken ct = default)
+    {
+        var tempPath = Guid.NewGuid().ToString();
+        await ExtractZipToTemp(file, tempPath, ct);
+        SaveVersionFiles(tempPath, package, platform);
     }
     
     static MemoryStream GenerateStreamFromString(string value) => new(Encoding.UTF8.GetBytes(value ?? ""));
@@ -150,32 +160,38 @@ public class NdibService(
         };
 
     
-    public async Task<byte[]> BuildUpdate(Package src, Package dst, CancellationToken ct)
+    public async Task<byte[]> BuildUpdate(Package src, Package dst, Platform platform, CancellationToken ct)
     {
-        var zipPath = PathsResolver.GetPatchResultZipPath(src, dst);
+        var zipPath = PathsResolver.GetPatchResultZipPath(src, dst, platform);
         if (sftpClient.Exists(zipPath))
         {
             var tempPath = Path.GetTempFileName();
             sftpClient.DownloadFile(tempPath, zipPath);
             return await File.ReadAllBytesAsync(tempPath, ct);
         }
+    
+        var patchTempPath = $"{Guid.NewGuid()}";
+        var zipTempPath = $"{Guid.NewGuid()}.zip";
+        Directory.CreateDirectory(patchTempPath);
 
         var srcPath = PathsResolver.GetVersionPath(src.ProductGuid, src.Guid);
         var dstPath = PathsResolver.GetVersionPath(dst.ProductGuid, dst.Guid);
         sftpClient.DownloadDirectory(srcPath, srcPath);
         sftpClient.DownloadDirectory(dstPath, dstPath);
-    
-        var patchTempPath = $"{Guid.NewGuid()}";
-        var zipTempPath = $"{Guid.NewGuid()}.zip";
-        Directory.CreateDirectory(patchTempPath);
-        await PatchBuilder.CreatePatch(src, dst, patchTempPath, ct);
+        await PatchBuilder.CreatePatch(src, dst, patchTempPath, ct: ct);
+
+        var srcPlatformSpecificPath = PathsResolver.GetVersionPath(src.ProductGuid, src.Guid, platform);
+        var dstPlatformSpecificPath = PathsResolver.GetVersionPath(dst.ProductGuid, dst.Guid, platform);
+        sftpClient.DownloadDirectory(srcPlatformSpecificPath, srcPlatformSpecificPath);
+        sftpClient.DownloadDirectory(dstPlatformSpecificPath, dstPlatformSpecificPath);
+        await PatchBuilder.CreatePatch(src, dst, patchTempPath, platform, ct);
 
         if (File.Exists(zipTempPath))
             File.Delete(zipTempPath);
         
         ZipFile.CreateFromDirectory(patchTempPath, zipTempPath);
         var bytes = File.ReadAllBytes(zipTempPath);
-        sftpClient.CreateDirectory(PathsResolver.GetPatchVersionPath(src, dst));
+        sftpClient.CreateDirectory(PathsResolver.GetPatchVersionPath(src, dst, platform));
         sftpClient.UploadFile(zipTempPath, zipPath);
         Directory.Delete(srcPath, true);
         Directory.Delete(dstPath, true);
@@ -213,16 +229,17 @@ public class NdibService(
         product.ImageCount = ndibData.Images.Count;
     }
 
-    public FileStream DownloadWholeProduct(Guid productGuid, Guid packageGuid)
+    public FileStream DownloadWholeProduct(Guid productGuid, Guid packageGuid, Platform platform)
     {
         var tempZipPath = $"{Guid.NewGuid()}.zip";
-        var remotePath = PathsResolver.GetWholeProductZipPath(productGuid, packageGuid);
+        var remotePath = PathsResolver.GetWholeProductZipPath(productGuid, packageGuid, platform);
         if (sftpClient.Exists(remotePath))
             sftpClient.DownloadFile(tempZipPath, remotePath);
         else
         {
             var tempSourcesPath = $"{Guid.NewGuid()}";
             sftpClient.DownloadDirectory(tempSourcesPath, PathsResolver.GetVersionPath(productGuid, packageGuid));
+            sftpClient.DownloadDirectory(tempSourcesPath, PathsResolver.GetVersionPath(productGuid, packageGuid, platform));
             ZipFile.CreateFromDirectory(tempSourcesPath, tempZipPath);
             sftpClient.UploadFile(tempZipPath, remotePath);
             Directory.Delete(tempSourcesPath, true);

@@ -5,11 +5,10 @@ namespace DsLauncher.Api.Ndib;
 
 public static class PatchBuilder
 {
-    public static async Task CreatePatch(Package srcPackage, Package dstPackage, string patchPath, CancellationToken ct)
+    public static async Task CreatePatch(Package srcPackage, Package dstPackage, string patchPath, Platform? platform = null, CancellationToken ct = default)
     {
-        var srcVerPath = PathsResolver.GetVersionPath(srcPackage.ProductGuid, srcPackage.Guid);
-        var dstVerPath = PathsResolver.GetVersionPath(dstPackage.ProductGuid, dstPackage.Guid);
-        var deletedFilesList = PathsResolver.DELETED_FILES_FILE;
+        var srcVerPath = PathsResolver.GetVersionPath(srcPackage.ProductGuid, srcPackage.Guid, platform);
+        var dstVerPath = PathsResolver.GetVersionPath(dstPackage.ProductGuid, dstPackage.Guid, platform);
         var srcFiles = GetFileHashes(srcVerPath);
         var dstFiles = GetFileHashes(dstVerPath);
 
@@ -44,7 +43,7 @@ public static class PatchBuilder
             File.Copy(srcPath, dstPath, true);
         }
 
-        await File.WriteAllLinesAsync($"{patchPath}/{deletedFilesList}", deletedFiles, ct);
+        await File.AppendAllLinesAsync($"{patchPath}/{PathsResolver.DELETED_FILES_FILE}", deletedFiles, ct);
     }
 
     static Dictionary<string, string> GetFileHashes(string directory)

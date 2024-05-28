@@ -4,7 +4,6 @@ using DsIdentity.ApiClient;
 using DsLauncher.Api.Ndib;
 using DsLauncher.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.IO.Compression;
 
 namespace DsLauncher.Api;
 
@@ -16,19 +15,19 @@ public class NdibController(NdibService ndibService, Repository<Package> package
     readonly Repository<Package> packageRepo = packageRepo;
     readonly Repository<Product> productRepo = productRepo;
 
-    [HttpGet("download/{srcGuid}/{dstGuid}")]
-    public async Task<ActionResult> GetUpdate(Guid srcGuid, Guid dstGuid, CancellationToken ct)
+    [HttpGet("download/{srcGuid}/{dstGuid}/{platform}")]
+    public async Task<ActionResult> GetUpdate(Guid srcGuid, Guid dstGuid, Platform platform, CancellationToken ct)
     {
         var srcPackage = await packageRepo.GetById(srcGuid.Deobfuscate().Id, ct: ct);
         var dstPackage = await packageRepo.GetById(dstGuid.Deobfuscate().Id, ct: ct);
         if (srcPackage == null || dstPackage == null) return Problem();
 
-        return File(await ndibService.BuildUpdate(srcPackage, dstPackage, ct), "application/zip", PathsResolver.RESULT_FILE);
+        return File(await ndibService.BuildUpdate(srcPackage, dstPackage, platform, ct), "application/zip", PathsResolver.RESULT_FILE);
     }
 
 
-    [HttpGet("download/{srcGuid}/latest")]
-    public async Task<ActionResult> GetUpdate(Guid srcGuid, CancellationToken ct)
+    [HttpGet("download/{srcGuid}/latest/{platform}")]
+    public async Task<ActionResult> GetUpdate(Guid srcGuid, Platform platform, CancellationToken ct)
     {
         var srcPackage = await packageRepo.GetById(srcGuid.Deobfuscate().Id, ct: ct);
         if (srcPackage == null) return Problem();
@@ -36,22 +35,28 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         var latestPackage = (await packageRepo.GetAll(restrict: x => x.ProductId == srcPackage.ProductGuid.Deobfuscate().Id, ct: ct)).MaxBy(x => x.CreatedAt);
         if (latestPackage == null) return Problem();
 
-        return File(await ndibService.BuildUpdate(srcPackage, latestPackage, ct), "application/zip", PathsResolver.RESULT_FILE);
+        return File(await ndibService.BuildUpdate(srcPackage, latestPackage, platform, ct), "application/zip", PathsResolver.RESULT_FILE);
     }
 
-    [HttpGet("download/{productGuid}")]
-    public async Task<ActionResult> GetWhole(Guid productGuid, CancellationToken ct)
+    [HttpGet("download/{productGuid}/{platform}")]
+    public async Task<ActionResult> GetWhole(Guid productGuid, Platform platform, CancellationToken ct)
     {
         var latestPackage = (await packageRepo.GetAll(restrict: x => x.ProductId == productGuid.Deobfuscate().Id, ct: ct)).MaxBy(x => x.CreatedAt);
         if (latestPackage == null) return Problem();
         
-        return File(ndibService.DownloadWholeProduct(productGuid, latestPackage.Guid), "application/zip", PathsResolver.RESULT_FILE);
+        return File(ndibService.DownloadWholeProduct(productGuid, latestPackage.Guid, platform), "application/zip", PathsResolver.RESULT_FILE);
     }
 
     [HttpPost("upload")]
-    public async Task<ActionResult> UploadNew(IFormFile binFile, IFormFile metadataFile, CancellationToken ct)
+    public async Task<ActionResult> UploadNew(
+        IFormFile coreFile,
+        IFormFile metadataFile,
+        IFormFile? winFile = null,
+        IFormFile? linuxFile = null,
+        IFormFile? macFile = null,
+        CancellationToken ct = default)
     {
-        if (binFile == null || metadataFile == null) return BadRequest("2 files expected");
+        if (coreFile == null || metadataFile == null) return BadRequest("at least 2 files expected");
 
         var developer = await ndibService.GetUserDeveloper(HttpContext.GetUserGuid(), ct);
         if (developer == null) return Unauthorized();
@@ -59,9 +64,6 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         var metadataTempPath = Guid.NewGuid().ToString();
         var ndibData = await ndibService.ExtractZipToTemp(metadataFile, metadataTempPath, ct);
         if (ndibData == null) return Problem();
-
-        var binTempPath = Guid.NewGuid().ToString();
-        await ndibService.ExtractZipToTemp(binFile, binTempPath, ct);
         
         var product = (await productRepo.GetAll(restrict: x => x.Name == ndibData.Name, expand: [x => x.Developer!], ct: ct)).FirstOrDefault();
         Package newPackage;
@@ -73,7 +75,11 @@ public class NdibController(NdibService ndibService, Repository<Package> package
             newPackage = await ndibService.PersistPackage(ndibData, product, ct);
 
         await ndibService.UploadImagesToStorage(ndibData, metadataTempPath, newPackage.ProductGuid, ct);
-        ndibService.SaveVersionFiles(binTempPath, newPackage);
+
+        await ndibService.UploadVersion(coreFile, newPackage, ct: ct);
+        if (winFile != null) await ndibService.UploadVersion(winFile, newPackage, Platform.win, ct);
+        if (linuxFile != null) await ndibService.UploadVersion(linuxFile, newPackage, Platform.linux, ct);
+        if (macFile != null) await ndibService.UploadVersion(macFile, newPackage, Platform.mac, ct);
 
         return Ok();
     }

@@ -623,14 +623,14 @@ namespace DsLauncher.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_GetUpdateAsync(System.Guid srcGuid, System.Guid dstGuid)
+        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_GetUpdateAsync(System.Guid srcGuid, System.Guid dstGuid, Platform platform)
         {
-            return Ndib_GetUpdateAsync(srcGuid, dstGuid, System.Threading.CancellationToken.None);
+            return Ndib_GetUpdateAsync(srcGuid, dstGuid, platform, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_GetUpdateAsync(System.Guid srcGuid, System.Guid dstGuid, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_GetUpdateAsync(System.Guid srcGuid, System.Guid dstGuid, Platform platform, System.Threading.CancellationToken cancellationToken)
         {
             if (srcGuid == null)
                 throw new System.ArgumentNullException("srcGuid");
@@ -638,6 +638,9 @@ namespace DsLauncher.ApiClient
             if (dstGuid == null)
                 throw new System.ArgumentNullException("dstGuid");
 
+            if (platform == null)
+                throw new System.ArgumentNullException("platform");
+
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -649,11 +652,13 @@ namespace DsLauncher.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "Ndib/download/{srcGuid}/{dstGuid}"
+                    // Operation Path: "Ndib/download/{srcGuid}/{dstGuid}/{platform}"
                     urlBuilder_.Append("Ndib/download/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(srcGuid, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append('/');
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(dstGuid, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append('/');
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(platform, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -706,18 +711,21 @@ namespace DsLauncher.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_GetUpdate2Async(System.Guid srcGuid)
+        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_GetUpdate2Async(System.Guid srcGuid, Platform platform)
         {
-            return Ndib_GetUpdate2Async(srcGuid, System.Threading.CancellationToken.None);
+            return Ndib_GetUpdate2Async(srcGuid, platform, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_GetUpdate2Async(System.Guid srcGuid, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_GetUpdate2Async(System.Guid srcGuid, Platform platform, System.Threading.CancellationToken cancellationToken)
         {
             if (srcGuid == null)
                 throw new System.ArgumentNullException("srcGuid");
 
+            if (platform == null)
+                throw new System.ArgumentNullException("platform");
+
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -729,10 +737,11 @@ namespace DsLauncher.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "Ndib/download/{srcGuid}/latest"
+                    // Operation Path: "Ndib/download/{srcGuid}/latest/{platform}"
                     urlBuilder_.Append("Ndib/download/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(srcGuid, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append("/latest");
+                    urlBuilder_.Append("/latest/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(platform, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -785,18 +794,21 @@ namespace DsLauncher.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_GetWholeAsync(System.Guid productGuid)
+        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_GetWholeAsync(System.Guid productGuid, Platform platform)
         {
-            return Ndib_GetWholeAsync(productGuid, System.Threading.CancellationToken.None);
+            return Ndib_GetWholeAsync(productGuid, platform, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_GetWholeAsync(System.Guid productGuid, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_GetWholeAsync(System.Guid productGuid, Platform platform, System.Threading.CancellationToken cancellationToken)
         {
             if (productGuid == null)
                 throw new System.ArgumentNullException("productGuid");
 
+            if (platform == null)
+                throw new System.ArgumentNullException("platform");
+
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
@@ -808,9 +820,11 @@ namespace DsLauncher.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "Ndib/download/{productGuid}"
+                    // Operation Path: "Ndib/download/{productGuid}/{platform}"
                     urlBuilder_.Append("Ndib/download/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(productGuid, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append('/');
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(platform, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -863,14 +877,14 @@ namespace DsLauncher.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_UploadNewAsync(FileParameter binFile, FileParameter metadataFile)
+        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_UploadNewAsync(FileParameter coreFile, FileParameter metadataFile, FileParameter winFile, FileParameter linuxFile, FileParameter macFile)
         {
-            return Ndib_UploadNewAsync(binFile, metadataFile, System.Threading.CancellationToken.None);
+            return Ndib_UploadNewAsync(coreFile, metadataFile, winFile, linuxFile, macFile, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_UploadNewAsync(FileParameter binFile, FileParameter metadataFile, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_UploadNewAsync(FileParameter coreFile, FileParameter metadataFile, FileParameter winFile, FileParameter linuxFile, FileParameter macFile, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -883,14 +897,14 @@ namespace DsLauncher.ApiClient
                     content_.Headers.Remove("Content-Type");
                     content_.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary_);
 
-                    if (binFile == null)
-                        throw new System.ArgumentNullException("binFile");
+                    if (coreFile == null)
+                        throw new System.ArgumentNullException("coreFile");
                     else
                     {
-                        var content_binFile_ = new System.Net.Http.StreamContent(binFile.Data);
-                        if (!string.IsNullOrEmpty(binFile.ContentType))
-                            content_binFile_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(binFile.ContentType);
-                        content_.Add(content_binFile_, "binFile", binFile.FileName ?? "binFile");
+                        var content_coreFile_ = new System.Net.Http.StreamContent(coreFile.Data);
+                        if (!string.IsNullOrEmpty(coreFile.ContentType))
+                            content_coreFile_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(coreFile.ContentType);
+                        content_.Add(content_coreFile_, "coreFile", coreFile.FileName ?? "coreFile");
                     }
 
                     if (metadataFile == null)
@@ -901,6 +915,30 @@ namespace DsLauncher.ApiClient
                         if (!string.IsNullOrEmpty(metadataFile.ContentType))
                             content_metadataFile_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(metadataFile.ContentType);
                         content_.Add(content_metadataFile_, "metadataFile", metadataFile.FileName ?? "metadataFile");
+                    }
+
+                    if (winFile != null)
+                    {
+                        var content_winFile_ = new System.Net.Http.StreamContent(winFile.Data);
+                        if (!string.IsNullOrEmpty(winFile.ContentType))
+                            content_winFile_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(winFile.ContentType);
+                        content_.Add(content_winFile_, "winFile", winFile.FileName ?? "winFile");
+                    }
+
+                    if (linuxFile != null)
+                    {
+                        var content_linuxFile_ = new System.Net.Http.StreamContent(linuxFile.Data);
+                        if (!string.IsNullOrEmpty(linuxFile.ContentType))
+                            content_linuxFile_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(linuxFile.ContentType);
+                        content_.Add(content_linuxFile_, "linuxFile", linuxFile.FileName ?? "linuxFile");
+                    }
+
+                    if (macFile != null)
+                    {
+                        var content_macFile_ = new System.Net.Http.StreamContent(macFile.Data);
+                        if (!string.IsNullOrEmpty(macFile.ContentType))
+                            content_macFile_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse(macFile.ContentType);
+                        content_.Add(content_macFile_, "macFile", macFile.FileName ?? "macFile");
                     }
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
@@ -3692,6 +3730,21 @@ namespace DsLauncher.ApiClient
         [Newtonsoft.Json.JsonProperty("guid", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
         public System.Guid Guid { get; set; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.0.7.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum Platform
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"win")]
+        Win = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"linux")]
+        Linux = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"mac")]
+        Mac = 2,
 
     }
 
