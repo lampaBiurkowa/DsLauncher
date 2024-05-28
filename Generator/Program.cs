@@ -96,13 +96,14 @@ public class Generator
         Image = GenerateString()
     };
 
-    public static Product GenerateProduct(Developer developer, string? name = null) => new() 
+    public static Product GenerateProduct(Developer developer, string? name = null, int imageCount = 0) => new() 
     {
         Name = name ?? GenerateString(),
         Developer = developer,
         Description = LoremIpsum(),
         Tags = GenerateString(),
         Price = GenerateInt(),
+        ImageCount = imageCount,
     };
 
     public static Review GenerateReview(Product product) => new() 
@@ -164,24 +165,24 @@ public class Generator
 
         for (int i = 0; i < 10; i++)
             db.Product.Add(GenerateProduct(db.Developer.ToList().ElementAt(random.Next(10))));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().ElementAt(random.Next(10)), "asda"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Palmtop Picker"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Frohher"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Space Jumper"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "RAM Engineer"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Arctic Flyer"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Air Drop"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Fire Rescue"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Sea Rescue"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Brainvita"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Moorhuhn Soccer"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "PZPN 18"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "GP vs Superbike"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Team HotWheels DRIFT"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Team HotWheels MOTO X"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Team HotWheels BAJA"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Zalball"));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Arkanoid Trzyde"));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().ElementAt(random.Next(10)), "asda", 5));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Palmtop Picker", 4));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Frohher", 6));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Space Jumper", 2));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "RAM Engineer", 3));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Arctic Flyer", 7));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Air Drop", 8));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Fire Rescue", 10));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Sea Rescue", 13));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Brainvita", 4));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Moorhuhn Soccer", 6));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "PZPN 18", 3));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "GP vs Superbike", 4));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Team HotWheels DRIFT", 7));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Team HotWheels MOTO X", 6));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Team HotWheels BAJA", 5));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Zalball", 5));
+        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Arkanoid Trzyde", 4));
         db.SaveChanges();
 
         for (int i = 0; i < db.Product.Count() * 10; i++)
