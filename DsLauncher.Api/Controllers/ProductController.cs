@@ -1,5 +1,6 @@
 using DibBase.Extensions;
 using DibBase.Infrastructure;
+using DibBaseApi;
 using DibBaseSampleApi.Controllers;
 using DsIdentity.ApiClient;
 using DsLauncher.Models;
@@ -35,14 +36,16 @@ public class ProductController(Repository<Product> repository) : EntityControlle
         return await base.Delete(id, ct);
     }
 
-    [HttpGet]
-    [Route("developer/{id}")]
+    [HttpGet("search")]
+    public async Task<ActionResult<List<Product>>> Search(string query, int skip = 0, int take = 1000, CancellationToken ct = default) =>
+        (await repo.GetAll(restrict: x => x.Name.Contains(query), ct: ct)).Skip(skip).Take(take).Select(IdHelper.HidePrivateId).ToList();
+
+    [HttpGet("developer/{id}")]
     public async Task<ActionResult<List<Product>>> GetByDeveloper(Guid id, int skip = 0, int take = 1000, CancellationToken ct = default) =>
-        (await repo.GetAll(restrict: x => x.DeveloperId == id.Deobfuscate().Id, ct: ct)).Skip(skip).Take(take).ToList();
+        (await repo.GetAll(restrict: x => x.DeveloperId == id.Deobfuscate().Id, ct: ct)).Skip(skip).Take(take).Select(IdHelper.HidePrivateId).ToList();
 
 
-    [HttpGet]
-    [Route("get-id/{name}")]
+    [HttpGet("get-id/{name}")]
     public async Task<ActionResult<Guid?>> GetId(string name, CancellationToken ct = default) =>
         (await repo.GetAll(restrict: x => x.Name == name, ct: ct)).FirstOrDefault()?.Guid;
 }
