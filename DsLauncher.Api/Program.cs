@@ -2,7 +2,7 @@ using DibBase.Infrastructure;
 using DibBase.ModelBase;
 using DsLauncher.Infrastructure;
 using DsLauncher.Models;
-using DsIdentity.ApiClient;
+using DsCore.ApiClient;
 using Microsoft.EntityFrameworkCore;
 using DsStorage.ApiClient;
 using Microsoft.OpenApi.Models;
@@ -56,7 +56,7 @@ foreach (var assembly in assemblies)
     }
 }
 builder.Services.AddScoped<NdibService>();
-builder.Configuration.AddDsIdentity(builder.Services);
+builder.Configuration.AddDsCore(builder.Services);
 builder.Configuration.AddDsStorage(builder.Services);
 builder.Services.AddAuthorization();
 var app = builder.Build();

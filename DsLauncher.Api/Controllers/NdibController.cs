@@ -1,6 +1,6 @@
 using DibBase.Extensions;
 using DibBase.Infrastructure;
-using DsIdentity.ApiClient;
+using DsCore.ApiClient;
 using DsLauncher.Api.Ndib;
 using DsLauncher.Models;
 using Microsoft.AspNetCore.Mvc;
