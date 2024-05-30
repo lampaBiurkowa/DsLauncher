@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="DibBaseApi" Version="0.0.20" />
     <PackageReference Include="DibBase" Version="0.0.20" />
-    <PackageReference Include="DsCore.ApiClient" Version="1.0.21" />
+    <PackageReference Include="DsCore.ApiClient" Version="1.0.22" />
     <PackageReference Include="DsCryptoLib" Version="1.0.3" />
     <PackageReference Include="DsSftpLib" Version="1.0.1" />
     <PackageReference Include="DsStorage.ApiClient" Version="1.0.11" />
