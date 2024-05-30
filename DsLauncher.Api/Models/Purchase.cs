@@ -11,4 +11,5 @@ public class Purchase : Entity
     [DsLong]
     public long ProductId { get; set; }
     public Guid TransactionGuid { get; set; }
+    public Guid UserGuid { get; set; }
 }

@@ -10,5 +10,6 @@ public class PurchaseEntityTypeConfiguration : IEntityTypeConfiguration<Purchase
     {
         builder.Property(x => x.ProductId).IsRequired();
         builder.Property(x => x.TransactionGuid).IsRequired();
+        builder.Property(x => x.UserGuid).IsRequired();
     }
 }

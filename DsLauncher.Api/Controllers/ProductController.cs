@@ -11,7 +11,7 @@ namespace DsLauncher.Api;
 
 [ApiController]
 [Route("[controller]")]
-public class ProductController(Repository<Product> repository) : EntityController<Product>(repository)
+public class ProductController(Repository<Product> repo, Repository<Purchase> purchaseRepo) : EntityController<Product>(repo)
 {
     [Authorize]
     [HttpPost]
@@ -44,8 +44,18 @@ public class ProductController(Repository<Product> repository) : EntityControlle
     public async Task<ActionResult<List<Product>>> GetByDeveloper(Guid id, int skip = 0, int take = 1000, CancellationToken ct = default) =>
         (await repo.GetAll(restrict: x => x.DeveloperId == id.Deobfuscate().Id, ct: ct)).Skip(skip).Take(take).Select(IdHelper.HidePrivateId).ToList();
 
-
     [HttpGet("get-id/{name}")]
     public async Task<ActionResult<Guid?>> GetId(string name, CancellationToken ct = default) =>
         (await repo.GetAll(restrict: x => x.Name == name, ct: ct)).FirstOrDefault()?.Guid;
+
+    [Authorize]
+    [HttpGet("user")]
+    public async Task<ActionResult<List<Guid>>> GetByUser(CancellationToken ct = default)
+    {
+        var userGuid = HttpContext.GetUserGuid();
+        if (userGuid == null) return Unauthorized();
+
+        var purchases = await purchaseRepo.GetAll(restrict: x => x.UserGuid == userGuid, ct: ct);
+        return Ok(purchases.Select(x => x.ProductGuid));
+    }
 }

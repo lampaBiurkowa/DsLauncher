@@ -94,7 +94,9 @@ public class Generator
         Content = LoremIpsum(),
         Title = GenerateString(),
         Summary = LoremIpsum(),
-        Image = GenerateString()
+        Image = GenerateString(),
+        CreatedAt = DateTime.Now,
+        UpdatedAt = DateTime.Now
     };
 
     public static Product GenerateProduct(Developer developer, string? name = null, int imageCount = 0) => new() 
@@ -105,6 +107,8 @@ public class Generator
         Tags = GenerateString(),
         Price = GenerateInt(),
         ImageCount = imageCount,
+        CreatedAt = DateTime.Now,
+        UpdatedAt = DateTime.Now
     };
 
     public static Review GenerateReview(Product product) => new() 
@@ -112,13 +116,16 @@ public class Generator
         Product = product,
         Content = LoremIpsum(),
         Rate = GenerateInt(5) + 1,
-        UserGuid = userGuids[random.Next(userGuids.Count)]
+        UserGuid = userGuids[random.Next(userGuids.Count)],
+        CreatedAt = DateTime.Now,
+        UpdatedAt = DateTime.Now
     };
 
     public static Purchase GeneratePurchase(Product product) => new() 
     {
         Product = product,
         TransactionGuid = GenerateGuid(),
+        UserGuid = userGuids[random.Next(userGuids.Count)]
     };
 
     public static GameActivity GenerateGameActivity(Product product) => new() 

@@ -51,7 +51,8 @@ public class PurchaseController(
         await purchaseRepo.InsertAsync(new()
         {
             ProductGuid = guid,
-            TransactionGuid = (Guid)result
+            TransactionGuid = (Guid)result,
+            UserGuid = (Guid)userGuid
         }, ct);
         await purchaseRepo.CommitAsync(ct);
 
