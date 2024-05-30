@@ -85,7 +85,8 @@ public class Generator
         Name = GenerateString(),
         Description = LoremIpsum(),
         Website = GenerateString(),
-        UserGuids = [userGuids[random.Next(userGuids.Count)], userGuids[random.Next(userGuids.Count)]]
+        UserGuids = [userGuids[random.Next(userGuids.Count)], userGuids[random.Next(userGuids.Count)]],
+        SubscriptionPrice = GenerateInt()
     };
 
     public static News GenerateNews() => new() 
@@ -116,10 +117,8 @@ public class Generator
 
     public static Purchase GeneratePurchase(Product product) => new() 
     {
-        Date = DateTime.Now,
         Product = product,
-        Value = GenerateInt(),
-        UserGuid = userGuids[random.Next(userGuids.Count)]
+        TransactionGuid = GenerateGuid(),
     };
 
     public static GameActivity GenerateGameActivity(Product product) => new() 

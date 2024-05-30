@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using DsLauncher.Api.Ndib;
 using DsSftpLib;
 using System.Text.Json.Serialization;
+using DsLauncher.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -43,6 +44,8 @@ builder.Services.AddControllers().AddJsonOptions(options => { options.JsonSerial
 builder.Services.AddSwaggerDocument();
 builder.Configuration.AddDsSftpLib(builder.Services, true);
 builder.Services.AddDbContext<DbContext, DsLauncherContext>();
+builder.Services.AddSingleton<CacheService>();
+builder.Services.AddMemoryCache();
 var entityTypes = new List<Type>();
 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 Developer a; //█▬█ █ ▀█▀
