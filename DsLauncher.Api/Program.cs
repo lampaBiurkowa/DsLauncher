@@ -64,8 +64,8 @@ builder.Services.AddScoped<NdibService>();
 builder.Configuration.AddDsCore(builder.Services);
 builder.Configuration.AddDsStorage(builder.Services);
 builder.Services.AddDsNotifier(builder.Configuration);
-builder.Services.AddAuthorization();
 builder.Services.AddHostedService<EventService>();
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
