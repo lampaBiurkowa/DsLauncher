@@ -2,6 +2,7 @@ using DibBase.Extensions;
 using DibBase.Infrastructure;
 using DsCore.ApiClient;
 using DsCryptoLib;
+using DsLauncher.Events;
 using DsLauncher.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +55,7 @@ public class PurchaseController(
             TransactionGuid = (Guid)result,
             UserGuid = (Guid)userGuid
         }, ct);
+        await purchaseRepo.RegisterEvent(new PurchasedEvent { ProductGuid = guid, UserGuid = (Guid)userGuid }, ct);
         await purchaseRepo.CommitAsync(ct);
 
         return Ok(true);
@@ -87,6 +89,7 @@ public class PurchaseController(
         
         developer.UserGuids.Add((Guid)userGuid);
         await developerRepo.UpdateAsync(developer, ct);
+        await developerRepo.RegisterEvent(new BecameDeveloperEvent { DeveloperGuid = guid, UserGuid = (Guid)userGuid }, ct);
         await developerRepo.CommitAsync(ct);
 
         return Ok(true);
@@ -125,6 +128,10 @@ public class PurchaseController(
         await developerRepo.UpdateAsync(developer, ct);
         await developerRepo.CommitAsync(ct);
 
+        //TODO wrap in a parent transaction
+        await developerRepo.RegisterEvent(new BecameDeveloperEvent { DeveloperGuid = developer.Guid, UserGuid = (Guid)userGuid }, ct);
+        await developerRepo.CommitAsync(ct);
+
         return Ok(password); // :D/
     }
 
@@ -154,6 +161,7 @@ public class PurchaseController(
             CyclicFeeGuid = (Guid)result,
             UserGuid = (Guid)userGuid
         }, ct);
+        await subscriptionRepo.RegisterEvent(new SubscribedEvent { DeveloperGuid = guid, UserGuid = (Guid)userGuid }, ct);
         await subscriptionRepo.CommitAsync(ct);
 
         return Ok();
@@ -176,6 +184,7 @@ public class PurchaseController(
         var result = await client.Billing_CancelCyclicFeeAsync(subscription.CyclicFeeGuid, ct);
 
         await subscriptionRepo.DeleteAsync(subscription.Id, ct);
+        await subscriptionRepo.RegisterEvent(new UnsubscribedEvent { DeveloperGuid = guid, UserGuid = (Guid)userGuid }, ct);
         await subscriptionRepo.CommitAsync(ct);
 
         return Ok();

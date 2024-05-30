@@ -13,6 +13,7 @@
     <PackageReference Include="DsCryptoLib" Version="1.0.3" />
     <PackageReference Include="DsSftpLib" Version="1.0.1" />
     <PackageReference Include="DsStorage.ApiClient" Version="1.0.11" />
+    <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3" />
     <PackageReference Include="NSwag.AspNetCore" Version="14.0.7" />
     <PackageReference Include="NSwag.CodeGeneration" Version="14.0.7" />
@@ -24,6 +25,10 @@
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DsLauncher.Events\DsLauncher.Events.csproj" />
   </ItemGroup>
 
   <Target Name="GenerateClientCode" BeforeTargets="AfterBuild">
