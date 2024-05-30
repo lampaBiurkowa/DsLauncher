@@ -11,6 +11,8 @@ using DsLauncher.Api.Ndib;
 using DsSftpLib;
 using System.Text.Json.Serialization;
 using DsLauncher.Api;
+using DsNotifier.Client;
+using DsLauncher.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -61,7 +63,9 @@ foreach (var assembly in assemblies)
 builder.Services.AddScoped<NdibService>();
 builder.Configuration.AddDsCore(builder.Services);
 builder.Configuration.AddDsStorage(builder.Services);
+builder.Services.AddDsNotifier(builder.Configuration);
 builder.Services.AddAuthorization();
+builder.Services.AddHostedService<EventService>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

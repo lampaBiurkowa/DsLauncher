@@ -9,8 +9,9 @@
   <ItemGroup>
     <PackageReference Include="DibBaseApi" Version="0.0.20" />
     <PackageReference Include="DibBase" Version="0.0.20" />
-    <PackageReference Include="DsCore.ApiClient" Version="1.0.22" />
+    <PackageReference Include="DsCore.ApiClient" Version="1.0.24" />
     <PackageReference Include="DsCryptoLib" Version="1.0.3" />
+    <PackageReference Include="DsNotifier.Client" Version="1.0.4" />
     <PackageReference Include="DsSftpLib" Version="1.0.1" />
     <PackageReference Include="DsStorage.ApiClient" Version="1.0.11" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
