@@ -18,6 +18,7 @@ public class Product : Entity, IAudited, ITimeStamped, ISoftDelete
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public bool IsDeleted { get; set; }
+    public ProductType ProductType { get; set; }
 
     public List<string> GetFieldsToAudit() => [nameof(Price)];
 }

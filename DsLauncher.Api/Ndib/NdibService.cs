@@ -126,6 +126,7 @@ public class NdibService(
     public async Task AddAsGame(NdibData ndib, Product product, CancellationToken ct)
     {
         var game = (Game)product;
+        game.ProductType = ProductType.Game;
         game.ContentClassification = ndib.GetContentClassification();
         await gameRepo.InsertAsync(game, ct);
     }
@@ -133,6 +134,7 @@ public class NdibService(
     public async Task AddAsApp(Product product, CancellationToken ct)
     {
         var app = (App)product;
+        app.ProductType = ProductType.App;
         await appRepo.InsertAsync(app, ct);
     }
 

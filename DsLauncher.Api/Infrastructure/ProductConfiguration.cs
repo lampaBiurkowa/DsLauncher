@@ -13,6 +13,7 @@ public class ProductEntityTypeConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(x => x.Tags).IsRequired();
         builder.Property(x => x.Name).IsRequired();
         builder.Property(x => x.DeveloperId).IsRequired();
+        builder.Property(x => x.ProductType).IsRequired();
         builder.HasIndex(x => x.Name).IsUnique();
     }
 }

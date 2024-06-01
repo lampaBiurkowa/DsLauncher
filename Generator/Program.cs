@@ -105,34 +105,30 @@ public class Generator
 
     public static App GenerateApp(Developer developer, string? name = null, int imageCount = 0) => new() 
     {
-        // Product = new()
-        // {
-            Name = name ?? GenerateString(),
-            Developer = developer,
-            Description = LoremIpsum(),
-            Tags = GenerateString(),
-            Price = GenerateInt(),
-            ImageCount = imageCount,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
-        // }
+        Name = name ?? GenerateString(),
+        Developer = developer,
+        Description = LoremIpsum(),
+        Tags = GenerateString(),
+        Price = GenerateInt(),
+        ImageCount = imageCount,
+        CreatedAt = DateTime.Now,
+        UpdatedAt = DateTime.Now,
+        ProductType = ProductType.App,
     };
 
 
     public static Game GenerateGame(Developer developer, string? name = null, int imageCount = 0) => new() 
     {
-        // Product = new()
-        // {
-            Name = name ?? GenerateString(),
-            Developer = developer,
-            Description = LoremIpsum(),
-            Tags = GenerateString(),
-            Price = GenerateInt(),
-            ImageCount = imageCount,
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now
-        // },
-        ,ContentClassification = GetRandomEnumValue<ContentClassification>()
+        Name = name ?? GenerateString(),
+        Developer = developer,
+        Description = LoremIpsum(),
+        Tags = GenerateString(),
+        Price = GenerateInt(),
+        ImageCount = imageCount,
+        CreatedAt = DateTime.Now,
+        UpdatedAt = DateTime.Now,
+        ProductType = ProductType.Game,
+        ContentClassification = GetRandomEnumValue<ContentClassification>()
     };
 
     public static Review GenerateReview(Product product) => new() 
