@@ -1,6 +1,6 @@
 using System.IO.Compression;
 using DibBase.Infrastructure;
-using DsLauncher.Models;
+using DsLauncher.Api.Models;
 using DsStorage.ApiClient;
 using DsSftpLib;
 using Microsoft.AspNetCore.StaticFiles;
@@ -13,16 +13,18 @@ namespace DsLauncher.Api.Ndib;
 public class NdibService(
     Repository<Package> packageRepo,
     Repository<Product> productRepo,
+    Repository<App> appRepo,
+    Repository<Game> gameRepo,
     Repository<Developer> developerRepo,
     DsStorageClientFactory dsStorage,
     IDsSftpClient sftpClient)
 {
-    readonly Repository<Package> packageRepo = packageRepo;
-    readonly Repository<Product> productRepo = productRepo;
-    readonly Repository<Developer> developerRepo = developerRepo;
+    // readonly Repository<Package> packageRepo = packageRepo;
+    // readonly Repository<Product> productRepo = productRepo;
+    // readonly Repository<Developer> developerRepo = developerRepo;
     readonly DsStorageClient storageClient = dsStorage.CreateClient(string.Empty); //:D/
     readonly FileExtensionContentTypeProvider contentTypeProvider = new();
-    readonly IDsSftpClient sftpClient = sftpClient;
+    // readonly IDsSftpClient sftpClient = sftpClient;
     
     public async Task<NdibData?> ExtractZipToTemp(IFormFile file, string tempPath, CancellationToken ct)
     {
@@ -110,9 +112,28 @@ public class NdibService(
         newPackage.Product = null;
         newPackage.ProductId = product.Id; //hzd ultra
         await packageRepo.InsertAsync(newPackage, ct);
+
+        if (ndib.IsGame)
+            await AddAsGame(ndib, product, ct);
+        else
+            await AddAsApp(product, ct);
+
         await packageRepo.CommitAsync(ct);
 
         return newPackage;
+    }
+
+    public async Task AddAsGame(NdibData ndib, Product product, CancellationToken ct)
+    {
+        var game = (Game)product;
+        game.ContentClassification = ndib.GetContentClassification();
+        await gameRepo.InsertAsync(game, ct);
+    }
+
+    public async Task AddAsApp(Product product, CancellationToken ct)
+    {
+        var app = (App)product;
+        await appRepo.InsertAsync(app, ct);
     }
 
     public async Task<Developer?> GetUserDeveloper(Guid? userGuid, CancellationToken ct)

@@ -2,7 +2,7 @@ using DibBase.Extensions;
 using DibBase.Infrastructure;
 using DsCore.ApiClient;
 using DsLauncher.Api.Ndib;
-using DsLauncher.Models;
+using DsLauncher.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DsLauncher.Api;

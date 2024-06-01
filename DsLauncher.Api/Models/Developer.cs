@@ -1,6 +1,6 @@
 using DibBase.ModelBase;
 
-namespace DsLauncher.Models;
+namespace DsLauncher.Api.Models;
 
 public class Developer : Entity, ITimeStamped, ISoftDelete
 {

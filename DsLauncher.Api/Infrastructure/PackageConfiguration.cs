@@ -1,4 +1,4 @@
-using DsLauncher.Models;
+using DsLauncher.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

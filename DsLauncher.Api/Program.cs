@@ -1,7 +1,7 @@
 using DibBase.Infrastructure;
 using DibBase.ModelBase;
 using DsLauncher.Infrastructure;
-using DsLauncher.Models;
+using DsLauncher.Api.Models;
 using DsCore.ApiClient;
 using Microsoft.EntityFrameworkCore;
 using DsStorage.ApiClient;
@@ -12,7 +12,7 @@ using DsSftpLib;
 using System.Text.Json.Serialization;
 using DsLauncher.Api;
 using DsNotifier.Client;
-using DsLauncher.Api.Services;
+using DsLauncher.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -51,6 +51,7 @@ builder.Services.AddMemoryCache();
 var entityTypes = new List<Type>();
 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 Developer a; //█▬█ █ ▀█▀
+PurchasedEvent b; //█▬█ █ ▀█▀
 foreach (var assembly in assemblies)
 {
     entityTypes.AddRange(assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(DibBase.ModelBase.Entity))).ToList());
@@ -64,7 +65,7 @@ builder.Services.AddScoped<NdibService>();
 builder.Configuration.AddDsCore(builder.Services);
 builder.Configuration.AddDsStorage(builder.Services);
 builder.Services.AddDsNotifier(builder.Configuration);
-builder.Services.AddHostedService<EventService>();
+// builder.Services.AddHostedService<EventService>();
 builder.Services.AddAuthorization();
 var app = builder.Build();
 

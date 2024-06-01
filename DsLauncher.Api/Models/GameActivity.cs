@@ -1,7 +1,7 @@
 ﻿using DibBase.ModelBase;
 using DibBase.Obfuscation;
 
-namespace DsLauncher.Models;
+namespace DsLauncher.Api.Models;
 
 public class GameActivity : Entity
 {

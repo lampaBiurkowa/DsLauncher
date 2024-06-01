@@ -1,5 +1,5 @@
 using DibBase.Infrastructure;
-using DsLauncher.Models;
+using DsLauncher.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -12,6 +12,8 @@ public class DsLauncherContext : DibContext
     public DbSet<News> News { get; set; }
     public DbSet<Package> Package { get; set; }
     public DbSet<Product> Product { get; set; }
+    public DbSet<Game> Game { get; set; }
+    public DbSet<App> App { get; set; }
     public DbSet<Purchase> Purchase { get; set; }
     public DbSet<Review> Review { get; set; }
 

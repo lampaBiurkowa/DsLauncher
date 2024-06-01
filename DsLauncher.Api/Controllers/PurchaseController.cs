@@ -3,7 +3,7 @@ using DibBase.Infrastructure;
 using DsCore.ApiClient;
 using DsCryptoLib;
 using DsLauncher.Events;
-using DsLauncher.Models;
+using DsLauncher.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

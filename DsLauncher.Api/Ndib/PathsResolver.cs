@@ -1,5 +1,5 @@
 using DibBase.Extensions;
-using DsLauncher.Models;
+using DsLauncher.Api.Models;
 
 namespace DsLauncher.Api.Ndib;
 

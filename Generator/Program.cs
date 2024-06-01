@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using DsLauncher.Infrastructure;
-using DsLauncher.Models;
+using DsLauncher.Api.Models;
 public class Generator
 {
     static List<Guid> userGuids = [
@@ -77,7 +77,11 @@ public class Generator
     public static int GenerateInt(int maxValue = 100) => random.Next(maxValue);
 
     public static Guid GenerateGuid() => Guid.NewGuid();
-
+    public static T GetRandomEnumValue<T>() where T : Enum
+    {
+        Array values = Enum.GetValues(typeof(T));
+        return (T)values.GetValue(random.Next(values.Length));
+    }
     static int developerUserId = 1;
 
     public static Developer GenerateDeveloper() => new() 
@@ -99,16 +103,36 @@ public class Generator
         UpdatedAt = DateTime.Now
     };
 
-    public static Product GenerateProduct(Developer developer, string? name = null, int imageCount = 0) => new() 
+    public static App GenerateApp(Developer developer, string? name = null, int imageCount = 0) => new() 
     {
-        Name = name ?? GenerateString(),
-        Developer = developer,
-        Description = LoremIpsum(),
-        Tags = GenerateString(),
-        Price = GenerateInt(),
-        ImageCount = imageCount,
-        CreatedAt = DateTime.Now,
-        UpdatedAt = DateTime.Now
+        // Product = new()
+        // {
+            Name = name ?? GenerateString(),
+            Developer = developer,
+            Description = LoremIpsum(),
+            Tags = GenerateString(),
+            Price = GenerateInt(),
+            ImageCount = imageCount,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        // }
+    };
+
+
+    public static Game GenerateGame(Developer developer, string? name = null, int imageCount = 0) => new() 
+    {
+        // Product = new()
+        // {
+            Name = name ?? GenerateString(),
+            Developer = developer,
+            Description = LoremIpsum(),
+            Tags = GenerateString(),
+            Price = GenerateInt(),
+            ImageCount = imageCount,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        // },
+        ,ContentClassification = GetRandomEnumValue<ContentClassification>()
     };
 
     public static Review GenerateReview(Product product) => new() 
@@ -170,25 +194,27 @@ public class Generator
         db.SaveChanges();
 
         for (int i = 0; i < 10; i++)
-            db.Product.Add(GenerateProduct(db.Developer.ToList().ElementAt(random.Next(10))));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().ElementAt(random.Next(10)), "asda", 5));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Palmtop Picker", 4));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Frohher", 6));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Space Jumper", 2));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "RAM Engineer", 3));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Arctic Flyer", 7));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Air Drop", 8));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Fire Rescue", 10));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Sea Rescue", 13));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Brainvita", 4));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Moorhuhn Soccer", 6));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "PZPN 18", 3));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "GP vs Superbike", 4));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Team HotWheels DRIFT", 7));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Team HotWheels MOTO X", 6));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Team HotWheels BAJA", 5));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Zalball", 5));
-        db.Product.Add(GenerateProduct(db.Developer.ToList().Last(), "Arkanoid Trzyde", 4));
+            db.Game.Add(GenerateGame(db.Developer.ToList().ElementAt(random.Next(10))));
+        db.Game.Add(GenerateGame(db.Developer.ToList().ElementAt(random.Next(10)), "asda", 5));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Palmtop Picker", 4));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Frohher", 6));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Space Jumper", 2));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "RAM Engineer", 3));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Arctic Flyer", 7));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Air Drop", 8));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Fire Rescue", 10));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Sea Rescue", 13));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Brainvita", 4));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Moorhuhn Soccer", 6));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "PZPN 18", 3));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "GP vs Superbike", 4));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Team HotWheels DRIFT", 7));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Team HotWheels MOTO X", 6));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Team HotWheels BAJA", 5));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Zalball", 5));
+        db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Arkanoid Trzyde", 4));
+        for (int i = 0; i < 10; i++)
+            db.App.Add(GenerateApp(db.Developer.ToList().ElementAt(random.Next(10))));
         db.SaveChanges();
 
         for (int i = 0; i < db.Product.Count() * 10; i++)
@@ -200,39 +226,39 @@ public class Generator
         for (int i = 0; i < 20; i++)
             db.Package.Add(GeneratePackage(db.Product.ToList().ElementAt(random.Next(10)))); //nowym nieh ni miesza
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Palmtop Picker"), "Palmtop Picker.exe"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Frohher"), "frohher.exe"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "RAM Engineer"), "RAMEngineer.exe"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Arctic Flyer"), "START.EXE"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Air Drop"), "START.EXE"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Fire Rescue"), "START.EXE"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Sea Rescue"), "START.EXE"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Brainvita"), "WpfApp2.exe"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Space Jumper"), "SpaceJumper.exe"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Moorhuhn Soccer"), "Moorhuhn_Soccer.exe"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "PZPN 18"), "PZPN 18.exe"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "GP vs Superbike"), "bike_nocd_english.exe"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Team HotWheels DRIFT"), "DRIFT.EXE"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Team HotWheels MOTO X"), "MOTO.EXE"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Team HotWheels BAJA"), "BAJA.EXE"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Zalball"), "rel10.exe"));
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 3; i++)
             db.Package.Add(GeneratePackage(db.Product.First(p => p.Name == "Arkanoid Trzyde"), "ArkanoidTrzyde.exe"));
         db.SaveChanges();
     }

@@ -2,7 +2,7 @@ using DibBase.Extensions;
 using DibBase.Infrastructure;
 using DibBaseSampleApi.Controllers;
 using DsCore.ApiClient;
-using DsLauncher.Models;
+using DsLauncher.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
