@@ -43,7 +43,7 @@ public static class PatchBuilder
             File.Copy(srcPath, dstPath, true);
         }
 
-        await File.AppendAllLinesAsync($"{patchPath}/{PathsResolver.DELETED_FILES_FILE}", deletedFiles, ct);
+        // await File.AppendAllLinesAsync($"{patchPath}/{PathsResolver.DELETED_FILES_FILE}", deletedFiles, ct);
     }
 
     static Dictionary<string, string> GetFileHashes(string directory)

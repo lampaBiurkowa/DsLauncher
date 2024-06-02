@@ -11,9 +11,7 @@ namespace DsLauncher.Api;
 [Route("[controller]")]
 public class NdibController(NdibService ndibService, Repository<Package> packageRepo, Repository<Product> productRepo) : ControllerBase
 {
-    readonly NdibService ndibService = ndibService;
-    readonly Repository<Package> packageRepo = packageRepo;
-    readonly Repository<Product> productRepo = productRepo;
+    const string LATEST_PACKAGE_GUID_HEADER = "Latest-Package";
 
     [HttpGet("download/{srcGuid}/{dstGuid}/{platform}")]
     public async Task<ActionResult> GetUpdate(Guid srcGuid, Guid dstGuid, Platform platform, CancellationToken ct)
@@ -35,6 +33,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         var latestPackage = (await packageRepo.GetAll(restrict: x => x.ProductId == srcPackage.ProductGuid.Deobfuscate().Id, ct: ct)).MaxBy(x => x.CreatedAt);
         if (latestPackage == null) return Problem();
 
+        HttpContext.Response.Headers.Append(LATEST_PACKAGE_GUID_HEADER, latestPackage.Guid.ToString());
         return File(await ndibService.BuildUpdate(srcPackage, latestPackage, platform, ct), "application/zip", PathsResolver.RESULT_FILE);
     }
 
@@ -44,6 +43,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         var latestPackage = (await packageRepo.GetAll(restrict: x => x.ProductId == productGuid.Deobfuscate().Id, ct: ct)).MaxBy(x => x.CreatedAt);
         if (latestPackage == null) return Problem();
         
+        HttpContext.Response.Headers.Append(LATEST_PACKAGE_GUID_HEADER, latestPackage.Guid.ToString());
         return File(ndibService.DownloadWholeProduct(productGuid, latestPackage.Guid, platform), "application/zip", PathsResolver.RESULT_FILE);
     }
 
@@ -103,5 +103,14 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         await ndibService.UploadImagesToStorage(ndibData, tempPath, productGuid, ct);
 
         return Ok();
+    }
+
+    [HttpGet("version-hash/{packageGuid}/{platform}")]
+    public async Task<ActionResult<Dictionary<string, string>>> UpdateMetadata(Guid packageGuid, Platform platform, CancellationToken ct)
+    {
+        var package = await packageRepo.GetById(packageGuid.Deobfuscate().Id, ct: ct);
+        if (package == null) return Problem();
+
+        return Ok(await ndibService.GetVersionHash(package, platform, ct));
     }
 }

@@ -11,7 +11,7 @@ public static class PathsResolver
     const string PATCH_PATH = "patch";
     public const string RESULT_FILE = "result.zip";
     public const string HASH_FILE = "hash.json";
-    public const string DELETED_FILES_FILE = "deleted.txt";
+    // public const string DELETED_FILES_FILE = "deleted.dsdel";
 
     public static string GetVersionPath(Guid productGuid, Guid packageGuid, Platform? platform = null) =>
         $"{NDIB_PATH}/{productGuid}/{packageGuid}{(platform != null ? $"-{platform}" : "")}";
