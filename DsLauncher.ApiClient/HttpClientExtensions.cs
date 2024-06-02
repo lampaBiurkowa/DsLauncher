@@ -3,20 +3,27 @@ namespace HttpClientProgress;
 
 public static class HttpClientProgressExtensions
 {
-    public static async Task DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination, IProgress<float>? progress = null, CancellationToken ct = default)
+    const string LATEST_PACKAGE_GUID_HEADER = "Latest-Package";
+
+    public static async Task<Guid> DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination, IProgress<float>? progress = null, CancellationToken ct = default)
     {
         using var response = await client.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead, ct);
         var contentLength = response.Content.Headers.ContentLength;
+        //H Z D
+        _ = Guid.TryParse(response.Content.Headers.FirstOrDefault(x => x.Key == LATEST_PACKAGE_GUID_HEADER).Value.First(), out var latestPackageGuid);
+
         using var download = await response.Content.ReadAsStreamAsync(ct);
 
         if (progress is null || !contentLength.HasValue)
         {
             await download.CopyToAsync(destination, ct);
-            return;
+            return latestPackageGuid;
         }
 
         var progressWrapper = new Progress<long>(totalBytes => progress.Report(GetProgressPercentage(totalBytes, contentLength.Value)));
         await download.CopyToAsync(destination, 81920, progressWrapper, ct);
+
+        return latestPackageGuid;
 
         static float GetProgressPercentage (float totalBytes, float currentBytes) => (totalBytes / currentBytes) * 100f;
     }

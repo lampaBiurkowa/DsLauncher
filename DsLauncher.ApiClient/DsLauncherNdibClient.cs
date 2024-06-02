@@ -8,34 +8,33 @@ public class DsLauncherNdibApiClient(IOptions<DsLauncherOptions> options)
 {
     readonly DsLauncherOptions options = options.Value;
     
-    public async Task<Stream> ChangeToVersion(string bearerToken, Guid srcGuid, Guid dstGuid, Platform platform, EventHandler<float> callback)
+    public async Task<Guid> ChangeToVersion(string bearerToken, Guid srcGuid, Guid dstGuid, Platform platform, Stream stream, EventHandler<float> callback)
     {
         var url = $"Ndib/download/{srcGuid}/{dstGuid}/{platform}";
-        return await Download(bearerToken, url, callback);
+        return await Download(bearerToken, url, stream, callback);
     }
 
-    public async Task<Stream> UpdateToLatest(string bearerToken, Guid srcGuid, Platform platform, EventHandler<float> callback)
+    public async Task<Guid> UpdateToLatest(string bearerToken, Guid srcGuid, Platform platform, Stream stream, EventHandler<float> callback)
     {
         var url = $"Ndib/download/{srcGuid}/latest/{platform}";
-        return await Download(bearerToken, url, callback);
+        return await Download(bearerToken, url, stream, callback);
     }
 
-    public async Task<Stream> DownloadWhole(string bearerToken, Guid productGuid, Platform platform, EventHandler<float> callback)
+    public async Task DownloadWhole(string bearerToken, Guid productGuid, Platform platform, Stream stream, EventHandler<float> callback)
     {
         var url = $"Ndib/download/{productGuid}/{platform}";
-        return await Download(bearerToken, url, callback);
+        await Download(bearerToken, url, stream, callback);
     }
 
-    async Task<Stream> Download(string bearerToken, string url,  EventHandler<float> callback)
+    async Task<Guid> Download(string bearerToken, string url, Stream stream, EventHandler<float> callback)
     {
         var client = GetClient(bearerToken);
 
         var progress = new Progress<float>();
         progress.ProgressChanged += callback;
 
-        using var stream = new MemoryStream();
-        await client.DownloadDataAsync(url, stream, progress);
-        return stream;
+        var latestPackageGuid = await client.DownloadDataAsync(url, stream, progress);
+        return latestPackageGuid;
     }
 
     HttpClient GetClient(string bearerToken)
