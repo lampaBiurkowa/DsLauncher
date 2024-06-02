@@ -8,10 +8,10 @@ public class DsLauncherNdibApiClient(IOptions<DsLauncherOptions> options)
 {
     readonly DsLauncherOptions options = options.Value;
     
-    public async Task<Guid> ChangeToVersion(string bearerToken, Guid srcGuid, Guid dstGuid, Platform platform, Stream stream, EventHandler<float> callback)
+    public async Task ChangeToVersion(string bearerToken, Guid srcGuid, Guid dstGuid, Platform platform, Stream stream, EventHandler<float> callback)
     {
         var url = $"Ndib/download/{srcGuid}/{dstGuid}/{platform}";
-        return await Download(bearerToken, url, stream, callback);
+        await Download(bearerToken, url, stream, callback);
     }
 
     public async Task<Guid> UpdateToLatest(string bearerToken, Guid srcGuid, Platform platform, Stream stream, EventHandler<float> callback)
@@ -20,10 +20,10 @@ public class DsLauncherNdibApiClient(IOptions<DsLauncherOptions> options)
         return await Download(bearerToken, url, stream, callback);
     }
 
-    public async Task DownloadWhole(string bearerToken, Guid productGuid, Platform platform, Stream stream, EventHandler<float> callback)
+    public async Task<Guid> DownloadWhole(string bearerToken, Guid productGuid, Platform platform, Stream stream, EventHandler<float> callback)
     {
         var url = $"Ndib/download/{productGuid}/{platform}";
-        await Download(bearerToken, url, stream, callback);
+        return await Download(bearerToken, url, stream, callback);
     }
 
     async Task<Guid> Download(string bearerToken, string url, Stream stream, EventHandler<float> callback)
