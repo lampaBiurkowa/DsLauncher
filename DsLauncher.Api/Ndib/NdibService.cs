@@ -77,7 +77,7 @@ public class NdibService(
     {   
         sftpClient.UploadDirectory(tempPath, PathsResolver.GetVersionPath(newPackage.ProductGuid, newPackage.Guid, platform));
         var hash = JsonConvert.SerializeObject(GetFileHashes(tempPath));
-        sftpClient.UploadStream(GenerateStreamFromString(hash), PathsResolver.GetVersionHash(newPackage, platform));
+        sftpClient.UploadStream(GenerateStreamFromString(hash), PathsResolver.GetVersionVerificationHash(newPackage, platform));
         Directory.Delete(tempPath, true);
     }
 
@@ -157,15 +157,15 @@ public class NdibService(
         return developer.UserGuids.Contains((Guid)userGuid);
     }
 
-    public async Task<Dictionary<string, string>> GetVersionHash(Package package, Platform platform, CancellationToken ct)
+    public async Task<Dictionary<string, string>> GetVersionVerificationHash(Package package, Platform platform, CancellationToken ct)
     {
-        var coreHash = await GetHashPart(PathsResolver.GetVersionHash(package), ct);
-        var platformHash = await GetHashPart(PathsResolver.GetVersionHash(package, platform), ct);
+        var coreHash = await GetVerificationHashPart(PathsResolver.GetVersionVerificationHash(package), ct);
+        var platformHash = await GetVerificationHashPart(PathsResolver.GetVersionVerificationHash(package, platform), ct);
 
         return coreHash.Concat(platformHash).ToDictionary(pair => pair.Key, pair => pair.Value);
     }
 
-    async Task<Dictionary<string, string>> GetHashPart(string path, CancellationToken ct)
+    async Task<Dictionary<string, string>> GetVerificationHashPart(string path, CancellationToken ct)
     {
         using var stream = new MemoryStream();
         sftpClient.DownloadFile(stream, path);

@@ -4,10 +4,12 @@ using DsCore.ApiClient;
 using DsLauncher.Api.Ndib;
 using DsLauncher.Api.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DsLauncher.Api;
 
 [ApiController]
+[Authorize]
 [Route("[controller]")]
 public class NdibController(NdibService ndibService, Repository<Package> packageRepo, Repository<Product> productRepo) : ControllerBase
 {
@@ -106,11 +108,11 @@ public class NdibController(NdibService ndibService, Repository<Package> package
     }
 
     [HttpGet("version-hash/{packageGuid}/{platform}")]
-    public async Task<ActionResult<Dictionary<string, string>>> UpdateMetadata(Guid packageGuid, Platform platform, CancellationToken ct)
+    public async Task<ActionResult<Dictionary<string, string>>> GetVerificationHash(Guid packageGuid, Platform platform, CancellationToken ct)
     {
         var package = await packageRepo.GetById(packageGuid.Deobfuscate().Id, ct: ct);
         if (package == null) return Problem();
 
-        return Ok(await ndibService.GetVersionHash(package, platform, ct));
+        return Ok(await ndibService.GetVersionVerificationHash(package, platform, ct));
     }
 }

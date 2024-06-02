@@ -2062,14 +2062,14 @@ namespace DsLauncher.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_UpdateMetadataPOSTAsync(System.Guid productGuid, FileParameter metadataFile)
+        public virtual System.Threading.Tasks.Task<FileResponse> Ndib_UpdateMetadataAsync(System.Guid productGuid, FileParameter metadataFile)
         {
-            return Ndib_UpdateMetadataPOSTAsync(productGuid, metadataFile, System.Threading.CancellationToken.None);
+            return Ndib_UpdateMetadataAsync(productGuid, metadataFile, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_UpdateMetadataPOSTAsync(System.Guid productGuid, FileParameter metadataFile, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileResponse> Ndib_UpdateMetadataAsync(System.Guid productGuid, FileParameter metadataFile, System.Threading.CancellationToken cancellationToken)
         {
             if (productGuid == null)
                 throw new System.ArgumentNullException("productGuid");
@@ -2155,14 +2155,14 @@ namespace DsLauncher.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, string>> Ndib_UpdateMetadataGETAsync(System.Guid packageGuid, Platform platform)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, string>> Ndib_GetVerificationHashAsync(System.Guid packageGuid, Platform platform)
         {
-            return Ndib_UpdateMetadataGETAsync(packageGuid, platform, System.Threading.CancellationToken.None);
+            return Ndib_GetVerificationHashAsync(packageGuid, platform, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, string>> Ndib_UpdateMetadataGETAsync(System.Guid packageGuid, Platform platform, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.IDictionary<string, string>> Ndib_GetVerificationHashAsync(System.Guid packageGuid, Platform platform, System.Threading.CancellationToken cancellationToken)
         {
             if (packageGuid == null)
                 throw new System.ArgumentNullException("packageGuid");

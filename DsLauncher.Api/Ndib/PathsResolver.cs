@@ -15,7 +15,7 @@ public static class PathsResolver
 
     public static string GetVersionPath(Guid productGuid, Guid packageGuid, Platform? platform = null) =>
         $"{NDIB_PATH}/{productGuid}/{packageGuid}{(platform != null ? $"-{platform}" : "")}";
-    public static string GetVersionHash(Package package, Platform? platform = null) =>
+    public static string GetVersionVerificationHash(Package package, Platform? platform = null) =>
         $"{NDIB_PATH}/{package.ProductGuid}/{package.Obfuscate()}{(platform != null ? $"-{platform}" : "")}-{HASH_FILE}";
     public static string GetPatchVersionPath(Package srcPackage, Package dstPackage, Platform platform) =>
         $"{NDIB_PATH}/{srcPackage.ProductGuid}/{srcPackage.Obfuscate()}-{dstPackage.Obfuscate()}-{platform}";
