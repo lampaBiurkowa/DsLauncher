@@ -218,7 +218,6 @@ public class NdibService(
             MinCpu = ndib.MinCpu,
             MinDiskMib = ndib.MinDiskMib
         };
-
     
     public async Task<Stream> BuildUpdate(Package src, Package dst, Platform platform, CancellationToken ct)
     {
