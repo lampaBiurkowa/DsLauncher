@@ -10,6 +10,11 @@ public static class HttpClientProgressExtensions
         using var response = await client.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead, ct);
         var contentLength = response.Content.Headers.ContentLength;
         //H Z D
+        Console.WriteLine($"a {requestUrl}");
+        Console.WriteLine(response.Content.Headers.Select(x => x.Key));
+        Console.WriteLine("b");
+        Console.WriteLine(response.Content.Headers.FirstOrDefault(x => x.Key == LATEST_PACKAGE_GUID_HEADER).Value.Count());
+        Console.WriteLine("c");
         _ = Guid.TryParse(response.Content.Headers.FirstOrDefault(x => x.Key == LATEST_PACKAGE_GUID_HEADER).Value.First(), out var latestPackageGuid);
 
         using var download = await response.Content.ReadAsStreamAsync(ct);
