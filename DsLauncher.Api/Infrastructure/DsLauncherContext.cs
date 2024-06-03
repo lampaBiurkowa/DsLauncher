@@ -8,7 +8,7 @@ namespace DsLauncher.Infrastructure;
 public class DsLauncherContext : DibContext
 {
     public DbSet<Developer> Developer { get; set; }
-    public DbSet<GameActivity> GameActivity { get; set; }
+    public DbSet<Activity> Activity { get; set; }
     public DbSet<News> News { get; set; }
     public DbSet<Package> Package { get; set; }
     public DbSet<Product> Product { get; set; }

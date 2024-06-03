@@ -20,11 +20,6 @@ public class PurchaseController(
     Repository<Developer> developerRepo,
     CacheService cache) : ControllerBase
 {
-    readonly DsCoreClientFactory dsCoreClientFactory = dsCoreClientFactory;
-    readonly Repository<Purchase> purchaseRepo = purchaseRepo;
-    readonly Repository<Product> productRepo = productRepo;
-    readonly Repository<Subscription> subscriptionRepo = subscriptionRepo;
-    readonly CacheService cache = cache;
     const string DEFAULT_CURRENCY = "Ruble";
     const float DEVELOPER_ACCESS_PRICE = 5;
     readonly TimeSpan DeveloperAccessPaymentInterval = TimeSpan.FromDays(30);

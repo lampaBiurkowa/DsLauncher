@@ -3,7 +3,7 @@ using DibBase.Obfuscation;
 
 namespace DsLauncher.Api.Models;
 
-public class GameActivity : Entity
+public class Activity : Entity
 {
     public DateTime StartDate { get; set; }
     public DateTime? EndDate { get; set; }

@@ -148,7 +148,7 @@ public class Generator
         UserGuid = userGuids[random.Next(userGuids.Count)]
     };
 
-    public static GameActivity GenerateGameActivity(Product product) => new() 
+    public static Activity GenerateGameActivity(Product product) => new() 
     {
         StartDate = DateTime.Now,
         EndDate = DateTime.Now.AddMinutes(5),
@@ -219,7 +219,7 @@ public class Generator
         for (int i = 0; i < 20; i++)
             db.Purchase.Add(GeneratePurchase(db.Product.ToList().ElementAt(random.Next(db.Product.Count()))));
         for (int i = 0; i < 20; i++)
-            db.GameActivity.Add(GenerateGameActivity(db.Product.ToList().ElementAt(random.Next(db.Product.Count()))));
+            db.Activity.Add(GenerateGameActivity(db.Product.ToList().ElementAt(random.Next(db.Product.Count()))));
         for (int i = 0; i < 20; i++)
             db.Package.Add(GeneratePackage(db.Product.ToList().ElementAt(random.Next(10)))); //nowym nieh ni miesza
 
