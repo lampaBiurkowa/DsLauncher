@@ -11,7 +11,7 @@ public static class HttpClientProgressExtensions
         var contentLength = response.Content.Headers.ContentLength;
         //H Z D
         Console.WriteLine($"a {requestUrl}");
-        Console.WriteLine(response.Content.Headers.Select(x => x.Key));
+        Console.WriteLine(response.Content.Headers.Select(x => x.Key.ToString()));
         Console.WriteLine("b");
         Console.WriteLine(response.Content.Headers.FirstOrDefault(x => x.Key == LATEST_PACKAGE_GUID_HEADER).Value.Count());
         Console.WriteLine("c");
