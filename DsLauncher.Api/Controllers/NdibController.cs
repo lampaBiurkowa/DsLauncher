@@ -49,6 +49,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         return File(ndibService.DownloadWholeProduct(productGuid, latestPackage.Guid, platform), "application/zip", PathsResolver.RESULT_FILE);
     }
 
+    [DisableRequestSizeLimit]
     [HttpPost("upload")]
     public async Task<ActionResult> UploadNew(
         IFormFile coreFile,

@@ -209,6 +209,7 @@ public class Generator
         db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Team HotWheels BAJA", 5));
         db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Zalball", 5));
         db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Arkanoid Trzyde", 4));
+        db.SaveChanges();
         for (int i = 0; i < 10; i++)
             db.App.Add(GenerateApp(db.Developer.ToList().ElementAt(random.Next(10))));
         db.SaveChanges();
