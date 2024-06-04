@@ -19,8 +19,8 @@ public class NdibService(
     DsStorageClientFactory dsStorage,
     IDsSftpClient sftpClient)
 {
-    readonly DsStorageClient storageClient = dsStorage.CreateClient(string.Empty); //:D/
     readonly FileExtensionContentTypeProvider contentTypeProvider = new();
+    const string PRODUCTS_BUCKET_NAME = "products";//TODO conf
     
     public async Task<NdibData?> ExtractZipToTemp(IFormFile file, string tempPath, CancellationToken ct)
     {
@@ -62,14 +62,14 @@ public class NdibService(
         {
             var originalPath = Path.Combine(tempPath, ndibData.Images[i - 1]);
             var fileName = $"{i}{Path.GetExtension(ndibData.Images[i - 1])}";
-            await UploadFileToStorage(originalPath, $"{productGuid}", fileName, ct);
+            await UploadFileToStorage(originalPath, productGuid, fileName, ct);
         }
 
         if (!string.IsNullOrWhiteSpace(ndibData.Background))
-            await UploadFileToStorage(Path.Combine(tempPath, ndibData.Background), $"{productGuid}", $"bg{Path.GetExtension(ndibData.Background)}", ct);
+            await UploadFileToStorage(Path.Combine(tempPath, ndibData.Background), productGuid, $"bg{Path.GetExtension(ndibData.Background)}", ct);
         
         if (!string.IsNullOrWhiteSpace(ndibData.Icon))
-            await UploadFileToStorage(Path.Combine(tempPath, ndibData.Icon), $"{productGuid}", $"icon{Path.GetExtension(ndibData.Icon)}", ct);
+            await UploadFileToStorage(Path.Combine(tempPath, ndibData.Icon), productGuid, $"icon{Path.GetExtension(ndibData.Icon)}", ct);
         Directory.Delete(tempPath, true);
     }
 
@@ -173,11 +173,11 @@ public class NdibService(
         return await System.Text.Json.JsonSerializer.DeserializeAsync<Dictionary<string, string>>(stream, cancellationToken: ct) ?? throw new();
     }
 
-    async Task UploadFileToStorage(string srcPath, string bucketName, string remoteName, CancellationToken ct)
+    async Task UploadFileToStorage(string srcPath, Guid productGuid, string remoteName, CancellationToken ct)
     {
         using var stream = File.OpenRead(srcPath);
         contentTypeProvider.TryGetContentType(srcPath, out var contentType);
-        await storageClient.Storage_UploadFileToBucketAsync(bucketName, new(stream, remoteName, contentType), ct);
+        await dsStorage.CreateClient().Storage_UploadFileToBucketAsync(PRODUCTS_BUCKET_NAME, new(stream, remoteName, contentType), productGuid.ToString(), ct);
     }
 
     static Product GetProductFromNdibData(NdibData ndib, long developerId) =>

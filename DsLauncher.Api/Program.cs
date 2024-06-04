@@ -63,7 +63,7 @@ foreach (var assembly in assemblies)
 }
 builder.Services.AddScoped<NdibService>();
 builder.Configuration.AddDsCore(builder.Services);
-builder.Configuration.AddDsStorage(builder.Services);
+builder.Services.AddDsStorage(builder.Configuration);
 builder.Services.AddDsNotifier(builder.Configuration);
 // builder.Services.AddHostedService<EventService>();
 builder.Services.AddAuthorization();

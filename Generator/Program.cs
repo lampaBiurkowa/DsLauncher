@@ -17,7 +17,10 @@ public class Generator
         Guid.Parse("9dfe9b8f-4513-7c23-0b00-000000000000"),
         Guid.Parse("9dfe9b8f-4513-7c23-0c00-000000000000"),
         Guid.Parse("9dfe9b8f-4513-7c23-0d00-000000000000"),
-        Guid.Parse("9dfe9b8f-4513-7c23-0e00-000000000000")
+        Guid.Parse("9dfe9b8f-4513-7c23-0e00-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-0f00-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-1000-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-1100-000000000000")
     ];
     private static readonly Random random = new Random();
     private const string DefaultCharacterSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
