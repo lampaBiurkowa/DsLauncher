@@ -1,3 +1,4 @@
+using DibBase.Extensions;
 using DibBase.Infrastructure;
 using DsCore.ApiClient;
 using DsLauncher.Api.Models;
@@ -20,11 +21,14 @@ public class ActivityController(Repository<Activity> activityRepo, Repository<Ga
         var userGuid = HttpContext.GetUserGuid();
         if (userGuid == null || userGuid != newActivity.UserGuid) return Unauthorized();
 
-        var oldActivity = (await activityRepo.GetAll(restrict: x => x.StartDate == newActivity.StartDate && x.UserGuid == newActivity.UserGuid && x.ProductGuid == newActivity.ProductGuid, ct: ct)).FirstOrDefault();
+        var oldActivity = (await activityRepo.GetAll(restrict: x => x.StartDate == newActivity.StartDate && x.UserGuid == newActivity.UserGuid && x.ProductId == newActivity.ProductGuid.Deobfuscate().Id, ct: ct)).FirstOrDefault();
         if (oldActivity == null)
             await activityRepo.InsertAsync(newActivity, ct);
         else
-            await activityRepo.UpdateAsync(newActivity, ct);
+        {
+            oldActivity.EndDate = newActivity.EndDate;
+            await activityRepo.UpdateAsync(oldActivity, ct);
+        }
         
         await activityRepo.CommitAsync(ct);
         return Ok();
@@ -38,5 +42,16 @@ public class ActivityController(Repository<Activity> activityRepo, Repository<Ga
         var games = await gameRepo.GetByIds(results.Select(x => x.ProductId), ct: ct);
 
         return Ok(games.FirstOrDefault()?.Guid);
+    }
+
+    [Authorize]
+    [HttpPost("get-minutes-spent/{productGuid}")]
+    public async Task<ActionResult> GetTimeSpent(Guid productGuid, CancellationToken ct)
+    {
+        var userGuid = HttpContext.GetUserGuid();
+        if (userGuid == null) return Unauthorized();
+
+        var activities = await activityRepo.GetAll(restrict: x => x.UserGuid == userGuid && x.ProductId == productGuid.Deobfuscate().Id, ct: ct);
+        return Ok((int)(activities.Sum(x => (x.EndDate - x.StartDate).TotalSeconds) / 60));
     }
 }
