@@ -45,12 +45,9 @@ public class ActivityController(Repository<Activity> activityRepo, Repository<Ga
     }
 
     [Authorize]
-    [HttpPost("get-minutes-spent/{productGuid}")]
-    public async Task<ActionResult> GetTimeSpent(Guid productGuid, CancellationToken ct)
+    [HttpPost("get-minutes-spent/{productGuid}/{userGuid}")]
+    public async Task<ActionResult> GetTimeSpent(Guid productGuid, Guid userGuid, CancellationToken ct)
     {
-        var userGuid = HttpContext.GetUserGuid();
-        if (userGuid == null) return Unauthorized();
-
         var activities = await activityRepo.GetAll(restrict: x => x.UserGuid == userGuid && x.ProductId == productGuid.Deobfuscate().Id, ct: ct);
         return Ok((int)(activities.Sum(x => (x.EndDate - x.StartDate).TotalSeconds) / 60));
     }

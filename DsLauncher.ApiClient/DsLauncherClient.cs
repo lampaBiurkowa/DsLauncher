@@ -208,17 +208,20 @@ namespace DsLauncher.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<FileResponse> Activity_GetTimeSpentAsync(System.Guid productGuid)
+        public virtual System.Threading.Tasks.Task<FileResponse> Activity_GetTimeSpentAsync(System.Guid productGuid, System.Guid userGuid)
         {
-            return Activity_GetTimeSpentAsync(productGuid, System.Threading.CancellationToken.None);
+            return Activity_GetTimeSpentAsync(productGuid, userGuid, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<FileResponse> Activity_GetTimeSpentAsync(System.Guid productGuid, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<FileResponse> Activity_GetTimeSpentAsync(System.Guid productGuid, System.Guid userGuid, System.Threading.CancellationToken cancellationToken)
         {
             if (productGuid == null)
                 throw new System.ArgumentNullException("productGuid");
+
+            if (userGuid == null)
+                throw new System.ArgumentNullException("userGuid");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -232,9 +235,11 @@ namespace DsLauncher.ApiClient
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                 
-                    // Operation Path: "Activity/get-minutes-spent/{productGuid}"
+                    // Operation Path: "Activity/get-minutes-spent/{productGuid}/{userGuid}"
                     urlBuilder_.Append("Activity/get-minutes-spent/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(productGuid, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append('/');
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(userGuid, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
