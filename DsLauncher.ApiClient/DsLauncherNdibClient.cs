@@ -10,25 +10,25 @@ public class DsLauncherNdibApiClient(IOptions<DsLauncherOptions> options)
     
     public async Task ChangeToVersion(string bearerToken, Guid srcGuid, Guid dstGuid, Platform platform, Stream stream, EventHandler<float> callback)
     {
-        var url = $"Ndib/download/whole/{srcGuid}/{dstGuid}/{platform.ToString().ToLower()}";
+        var url = $"Ndib/download/{srcGuid}/{dstGuid}/{platform.ToString().ToLower()}";
         await Download(bearerToken, url, stream, callback);
     }
 
     public async Task<Guid> UpdateToLatest(string bearerToken, Guid srcGuid, Platform platform, Stream stream, EventHandler<float> callback)
     {
-        var url = $"Ndib/download/whole/{srcGuid}/latest/{platform.ToString().ToLower()}";
+        var url = $"Ndib/download/{srcGuid}/latest/{platform.ToString().ToLower()}";
         return await Download(bearerToken, url, stream, callback);
     }
 
     public async Task<Guid> DownloadWhole(string bearerToken, Guid productGuid, Platform platform, Stream stream, EventHandler<float> callback)
     {
-        var url = $"Ndib/download/{productGuid}/{platform.ToString().ToLower()}";
+        var url = $"Ndib/download/whole/{productGuid}/{platform.ToString().ToLower()}";
         return await Download(bearerToken, url, stream, callback);
     }
 
     public async Task<Guid> DownloadWholeVersion(string bearerToken, Guid productGuid, Platform platform, Guid packageGuid, Stream stream, EventHandler<float> callback)
     {
-        var url = $"Ndib/download/{productGuid}/{platform.ToString().ToLower()}/{packageGuid}";
+        var url = $"Ndib/download/whole/{productGuid}/{platform.ToString().ToLower()}/{packageGuid}";
         return await Download(bearerToken, url, stream, callback);
     }
 
