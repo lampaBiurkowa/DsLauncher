@@ -48,4 +48,13 @@ public class PackageController(Repository<Package> repository) : EntityControlle
         IdHelper.HidePrivateId(result);
         return Ok(result);
     }
+
+    [HttpGet("product/{productId}")]
+    public async Task<ActionResult<List<Package>>> GetForProduct(Guid productId, CancellationToken ct)
+    {
+        var result = (await repo.GetAll(restrict: x => x.ProductId == productId.Deobfuscate().Id, ct: ct))
+            .Select(IdHelper.HidePrivateId);
+
+        return Ok(result);
+    }
 }
