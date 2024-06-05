@@ -27,7 +27,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
 
 
     [HttpGet("download/{srcGuid}/latest/{platform}")]
-    public async Task<ActionResult> GetUpdate(Guid srcGuid, Platform platform, CancellationToken ct)
+    public async Task<ActionResult> GetUpdateToLatest(Guid srcGuid, Platform platform, CancellationToken ct)
     {
         var srcPackage = await packageRepo.GetById(srcGuid.Deobfuscate().Id, ct: ct);
         if (srcPackage == null) return Problem();
@@ -39,15 +39,20 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         return File(await ndibService.BuildUpdate(srcPackage, latestPackage, platform, ct), "application/zip", PathsResolver.RESULT_FILE);
     }
 
-    [HttpGet("download/{productGuid}/{platform}")]
+    [HttpGet("download/whole/{productGuid}/{platform}")]
     public async Task<ActionResult> GetWhole(Guid productGuid, Platform platform, CancellationToken ct)
     {
         var latestPackage = (await packageRepo.GetAll(restrict: x => x.ProductId == productGuid.Deobfuscate().Id, ct: ct)).MaxBy(x => x.CreatedAt);
         if (latestPackage == null) return Problem();
         
         HttpContext.Response.Headers.Append(LATEST_PACKAGE_GUID_HEADER, latestPackage.Guid.ToString());
+        
         return File(ndibService.DownloadWholeProduct(productGuid, latestPackage.Guid, platform), "application/zip", PathsResolver.RESULT_FILE);
     }
+
+    [HttpGet("download/whole/{productGuid}/{platform}/{packageGuid}")]
+    public ActionResult GetWholeVersion(Guid productGuid, Platform platform, Guid packageGuid) =>
+        File(ndibService.DownloadWholeProduct(productGuid, packageGuid, platform), "application/zip", PathsResolver.RESULT_FILE);
 
     [DisableRequestSizeLimit]
     [HttpPost("upload")]
@@ -59,7 +64,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         IFormFile? macFile = null,
         CancellationToken ct = default)
     {
-        if (coreFile == null || metadataFile == null) return BadRequest("at least 2 files expected");
+        if (coreFile == null || metadataFile == null) return BadRequest("core & metadata expected");
 
         var developer = await ndibService.GetUserDeveloper(HttpContext.GetUserGuid(), ct);
         if (developer == null) return Unauthorized();

@@ -102,7 +102,6 @@ public class NdibService(
 
     public async Task<Package> PersistPackage(NdibData ndib, Product product, CancellationToken ct)
     {
-        // var dedicatedProduct = await GetDedicatedProduct(product, ct) ?? throw new Exception();
         ApplyNdibDataToProduct(product, ndib);
         await productRepo.UpdateAsync(product, ct);
         var newPackage = GetPackageFromNdibData(ndib, product);
@@ -110,25 +109,10 @@ public class NdibService(
         newPackage.ProductId = product.Id; //hzd ultra
         await packageRepo.InsertAsync(newPackage, ct);
 
-        // if (ndib.IsGame)
-        //     await AddAsGame(ndib, dedicatedProduct, ct);
-        // else
-        //     await AddAsApp(dedicatedProduct, ct);
-
         await packageRepo.CommitAsync(ct);
 
         return newPackage;
     }
-
-    // async Task<Product?> GetDedicatedProduct(Product product, CancellationToken ct)
-    // {
-    //     if (product.ProductType == ProductType.Game)
-    //         return await gameRepo.GetById(product.Id, ct: ct);
-    //     else if (product.ProductType == ProductType.App)
-    //         return await appRepo.GetById(product.Id, ct: ct);
-    //     else
-    //         return null;
-    // }
 
     public async Task AddAsGame(NdibData ndib, Product product, CancellationToken ct)
     {
@@ -249,15 +233,6 @@ public class NdibService(
             File.Delete(zipTempPath);
         
         ZipFile.CreateFromDirectory(patchTempPath, zipTempPath);
-        // var bytes = File.ReadAllBytes(zipTempPath);
-        // sftpClient.CreateDirectory(PathsResolver.GetPatchVersionPath(src, dst, platform));
-        // sftpClient.UploadFile(zipTempPath, zipPath);
-        // Directory.Delete(srcPath, true);
-        // Directory.Delete(dstPath, true);
-        // Directory.Delete(patchTempPath, true);
-        // File.Delete(zipTempPath);
-
-        // return bytes;
 
         var memoryStream = new MemoryStream();
         using var fileStream = new FileStream(zipTempPath, FileMode.Open, FileAccess.Read);

@@ -1,6 +1,6 @@
 namespace DsLauncher.Api.Models;
 
-public class Game : Product, IDerivedKey, INdibable
+public class Game : Product, IDerivedKey
 {    
     public ContentClassification ContentClassification { get; set; }
 }
