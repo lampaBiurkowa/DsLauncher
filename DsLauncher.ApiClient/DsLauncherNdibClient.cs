@@ -26,6 +26,12 @@ public class DsLauncherNdibApiClient(IOptions<DsLauncherOptions> options)
         return await Download(bearerToken, url, stream, callback);
     }
 
+    public async Task<Guid> DownloadWholeVersion(string bearerToken, Guid productGuid, Platform platform, Guid packageGuid, Stream stream, EventHandler<float> callback)
+    {
+        var url = $"Ndib/download/{productGuid}/{platform.ToString().ToLower()}/{packageGuid}";
+        return await Download(bearerToken, url, stream, callback);
+    }
+
     async Task<Guid> Download(string bearerToken, string url, Stream stream, EventHandler<float> callback)
     {
         var client = GetClient(bearerToken);
