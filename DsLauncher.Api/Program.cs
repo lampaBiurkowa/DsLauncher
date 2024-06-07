@@ -62,6 +62,7 @@ foreach (var assembly in assemblies)
     }
 }
 builder.Services.AddScoped<NdibService>();
+builder.Services.AddSingleton<AccessContext>();
 builder.Services.AddDsCore(builder.Configuration);
 builder.Services.AddDsStorage(builder.Configuration);
 builder.Services.AddDsNotifier(builder.Configuration);

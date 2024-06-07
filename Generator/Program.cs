@@ -96,14 +96,15 @@ public class Generator
         SubscriptionPrice = GenerateInt()
     };
 
-    public static News GenerateNews() => new() 
+    public static News GenerateNews(Product product) => new() 
     {
         Content = LoremIpsum(),
         Title = GenerateString(),
         Summary = LoremIpsum(),
         Image = GenerateString(),
         CreatedAt = DateTime.Now,
-        UpdatedAt = DateTime.Now
+        UpdatedAt = DateTime.Now,
+        Product = product
     };
 
     public static App GenerateApp(Developer developer, string? name = null, int imageCount = 0) => new() 
@@ -189,10 +190,6 @@ public class Generator
         db.SaveChanges();
 
         for (int i = 0; i < 10; i++)
-            db.News.Add(GenerateNews());
-        db.SaveChanges();
-
-        for (int i = 0; i < 10; i++)
             db.Game.Add(GenerateGame(db.Developer.ToList().ElementAt(random.Next(10))));
         db.Game.Add(GenerateGame(db.Developer.ToList().ElementAt(random.Next(10)), "asda", 5));
         db.Game.Add(GenerateGame(db.Developer.ToList().Last(), "Palmtop Picker", 4));
@@ -215,6 +212,10 @@ public class Generator
         db.SaveChanges();
         for (int i = 0; i < 10; i++)
             db.App.Add(GenerateApp(db.Developer.ToList().ElementAt(random.Next(10))));
+        db.SaveChanges();
+
+        for (int i = 0; i < 10; i++)
+            db.News.Add(GenerateNews(db.Product.ToList().ElementAt(random.Next(db.Product.Count()))));
         db.SaveChanges();
 
         for (int i = 0; i < db.Product.Count() * 10; i++)

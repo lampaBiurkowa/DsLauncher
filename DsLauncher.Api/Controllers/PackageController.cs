@@ -11,32 +11,33 @@ namespace DsLauncher.Api;
 
 [ApiController]
 [Route("[controller]")]
-public class PackageController(Repository<Package> repository) : EntityController<Package>(repository)
+public class PackageController(Repository<Package> repository, AccessContext context) : EntityController<Package>(repository)
 {
     [Authorize]
     [HttpPost]
-    public override async Task<ActionResult<Guid>> Add(Package entity, CancellationToken ct) => await base.Add(entity, ct);
+    public override async Task<ActionResult<Guid>> Add(Package entity, CancellationToken ct)
+    {
+        if (!await BelongsToDeveloper(entity.Guid, ct)) return Unauthorized();
+
+        return await base.Add(entity, ct);
+    }
 
     [Authorize]
     [HttpPut]
     public override async Task<ActionResult<Guid>> Update(Package entity, CancellationToken ct)
     {
-        var item = await repo.GetById(entity.Guid.Deobfuscate().Id, [x => x.Product], ct);
-        if (item == null) return Problem();
-        if (!HttpContext.IsUser(item.Product.DeveloperGuid)) return Unauthorized();
+        if (!await BelongsToDeveloper(entity.Guid, ct)) return Unauthorized();
+        
         return await base.Update(entity, ct);
     }
 
     [Authorize]
     [HttpDelete]
-    public override async Task<IActionResult> Delete(Guid id, CancellationToken ct)
+    public override async Task<IActionResult> Delete(Guid guid, CancellationToken ct)
     {
-        var item = await repo.GetById(id.Deobfuscate().Id, [x => x.Product], ct);
-        if (item == null) return Problem();
-        if (!HttpContext.IsUser(item.Product.DeveloperGuid)) return Unauthorized();
+        if (!await BelongsToDeveloper(guid, ct)) return Unauthorized();
         
-        await base.Delete(id, ct);
-        return Ok();
+        return await base.Delete(guid, ct);
     }
 
     [HttpGet("latest/{productId}")]
@@ -56,5 +57,17 @@ public class PackageController(Repository<Package> repository) : EntityControlle
             .Select(IdHelper.HidePrivateId);
 
         return Ok(result);
+    }
+
+    async Task<bool> BelongsToDeveloper(Guid packageGuid, CancellationToken ct)
+    {
+        var userGuid = HttpContext.GetUserGuid();
+        if (userGuid == null) return false;
+
+        var item = await repo.GetById(packageGuid.Deobfuscate().Id, [x => x.Product!], ct);
+        if (item == null) return false;
+        repo.Clear();
+
+        return await context.BelongsToDeveloper((Guid)userGuid, item.Product!.DeveloperGuid, ct);
     }
 }
