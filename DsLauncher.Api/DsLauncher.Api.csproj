@@ -34,7 +34,7 @@
     <ProjectReference Include="..\DsLauncher.Events\DsLauncher.Events.csproj" />
   </ItemGroup>
 
-  <Target Name="GenerateClientCode" BeforeTargets="AfterBuild">
+  <Target Name="GenerateClientCode" BeforeTargets="AfterBuild" Condition="'$(Configuration)' == 'Debug'">
     <Exec Command="nswag run nswag.json /variables:Configuration=$(Configuration)" />
   </Target>
 
