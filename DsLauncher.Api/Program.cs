@@ -62,10 +62,9 @@ foreach (var assembly in assemblies)
     }
 }
 builder.Services.AddScoped<NdibService>();
-builder.Configuration.AddDsCore(builder.Services);
+builder.Services.AddDsCore(builder.Configuration);
 builder.Services.AddDsStorage(builder.Configuration);
 builder.Services.AddDsNotifier(builder.Configuration);
-// builder.Services.AddHostedService<EventService>();
 builder.Services.AddAuthorization();
 var app = builder.Build();
 
