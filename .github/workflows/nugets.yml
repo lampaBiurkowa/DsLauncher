@@ -7,7 +7,8 @@ on:
       - master
 
 env:
-  version: 1.0.${GITHUB_RUN_NUMBER}
+  gh-version: 1.0.${GITHUB_RUN_NUMBER}
+  IMAGE_NAME: ds-launcher-api
 
 jobs:
   deploy:
@@ -24,14 +25,39 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
           
-      - run: dotnet build DsLauncher.ApiClient/DsLauncher.ApiClient.csproj --configuration Release /p:Version=${{ env.version}}
+      - run: dotnet build DsLauncher.ApiClient/DsLauncher.ApiClient.csproj --configuration Release /p:Version=${{ env.gh-version }}
       - name: Create the package
-        run: dotnet pack DsLauncher.ApiClient/DsLauncher.ApiClient.csproj --configuration Release /p:Version=${{ env.version }}
+        run: dotnet pack DsLauncher.ApiClient/DsLauncher.ApiClient.csproj --configuration Release /p:Version=${{ env.gh-version }}
       - name: Publish to github
         run: dotnet nuget push DsLauncher.ApiClient/bin/Release/*.nupkg  -k ${{ secrets.GH_TOKEN }} -s https://nuget.pkg.github.com/DibrySoft/index.json --skip-duplicate
       
-      - run: dotnet build DsLauncher.Events/DsLauncher.Events.csproj --configuration Release /p:Version=${{ env.version}}
+      - run: dotnet build DsLauncher.Events/DsLauncher.Events.csproj --configuration Release /p:Version=${{ env.gh-version }}
       - name: Create the package
-        run: dotnet pack DsLauncher.Events/DsLauncher.Events.csproj --configuration Release /p:Version=${{ env.version }}
+        run: dotnet pack DsLauncher.Events/DsLauncher.Events.csproj --configuration Release /p:Version=${{ env.gh-version }}
       - name: Publish to github
         run: dotnet nuget push DsLauncher.Events/bin/Release/*.nupkg  -k ${{ secrets.GH_TOKEN }} -s https://nuget.pkg.github.com/DibrySoft/index.json --skip-duplicate
+
+  deploy-image:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-dotnet@v4.0.0
+      with:
+        dotnet-version: '8.0.105'
+        source-url: https://nuget.pkg.github.com/dibrysoft/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GH_TOKEN}}
+    - name: Build image
+      run: |
+        dotnet new globaljson --sdk-version 8.0.105 --force
+        dotnet publish --os linux --arch x64 -p:PublishProfile=DefaultContainer -c Release
+    - name: Push image
+      run: |
+        docker login --username=${{secrets.GH_USERNAME}} --password="${{secrets.GH_TOKEN}}" ghcr.io
+        docker image tag ${{ env.IMAGE_NAME }}:latest ghcr.io/dibrysoft/${{ env.IMAGE_NAME }}:${{ env.gh-version }}
+        docker image tag ${{ env.IMAGE_NAME }}:latest ghcr.io/dibrysoft/${{ env.IMAGE_NAME }}:latest
+        docker image push ghcr.io/dibrysoft/${{ env.IMAGE_NAME }}:${{ env.gh-version }}
+        docker image push ghcr.io/dibrysoft/${{ env.IMAGE_NAME }}:latest
