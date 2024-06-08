@@ -75,6 +75,11 @@ public class DeveloperController(
         return Ok(subscriptions.Count != 0);
     }
 
+    [HttpGet]
+    [Route("{guid}/subscriptions")]
+    public async Task<ActionResult<int>> GetSubscriptionsCount(Guid guid, CancellationToken ct) =>
+        Ok(await subscriptionRepo.GetCount(x => x.DeveloperGuid == guid, ct));
+
     async Task<bool> BelongsToDeveloper(Guid developerGuid, CancellationToken ct)
     {
         var userGuid = HttpContext.GetUserGuid();
