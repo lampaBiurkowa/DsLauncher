@@ -34,11 +34,12 @@ public class PurchaseController(
         var product = await productRepo.GetById(guid.Deobfuscate().Id, ct: ct);
         if (product == null) return Problem();
 
+        var userSubscribed = (await subscriptionRepo.GetAll(restrict: x => x.UserGuid == userGuid && x.DeveloperGuid == guid, ct: ct)).Count != 0;
         var client = dsCoreClientFactory.CreateClient(HttpContext.GetBearerToken()!);
         var result = await client.Billing_PayOnceAsync(new()
         {
             UserGuid = (Guid)userGuid,
-            Value = -product.Price,
+            Value = userSubscribed ? 0 : -product.Price,
             CurrencyGuid = await cache.GetCurrencyGuid(DEFAULT_CURRENCY, ct)
         }, ct);
 
