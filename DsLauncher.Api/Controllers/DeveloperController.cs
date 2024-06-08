@@ -1,5 +1,6 @@
 using DibBase.Extensions;
 using DibBase.Infrastructure;
+using DibBaseApi;
 using DibBaseSampleApi.Controllers;
 using DsCore.ApiClient;
 using DsLauncher.Api.Models;
@@ -38,8 +39,8 @@ public class DeveloperController(
     }
 
     [HttpGet("user/{userGuid}")]
-    public async Task<ActionResult<Developer?>> GetByUser(Guid userGuid, CancellationToken ct) =>
-        (await repo.GetAll(ct: ct)).FirstOrDefault(x => x.UserGuids.Contains(userGuid));
+    public async Task<ActionResult<IEnumerable<Developer>>> GetByUser(Guid userGuid, CancellationToken ct) =>
+        Ok((await repo.GetAll(ct: ct)).Where(x => x.UserGuids.Contains(userGuid)).Select(x => IdHelper.HidePrivateId(x)));
 
     [HttpPost]
     [Authorize]

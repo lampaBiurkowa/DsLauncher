@@ -1115,14 +1115,14 @@ namespace DsLauncher.ApiClient
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Developer> Developer_GetByUserAsync(System.Guid userGuid)
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Developer>> Developer_GetByUserAsync(System.Guid userGuid)
         {
             return Developer_GetByUserAsync(userGuid, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Developer> Developer_GetByUserAsync(System.Guid userGuid, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Developer>> Developer_GetByUserAsync(System.Guid userGuid, System.Threading.CancellationToken cancellationToken)
         {
             if (userGuid == null)
                 throw new System.ArgumentNullException("userGuid");
@@ -1167,7 +1167,7 @@ namespace DsLauncher.ApiClient
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Developer>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.Generic.ICollection<Developer>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
