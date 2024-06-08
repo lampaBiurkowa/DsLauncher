@@ -47,6 +47,10 @@ public class ProductController(
     public async Task<ActionResult<List<Product>>> Search(string query, int skip = 0, int take = 1000, CancellationToken ct = default) =>
         (await repo.GetAll(restrict: x => x.Name.Contains(query), ct: ct)).Skip(skip).Take(take).Select(IdHelper.HidePrivateId).ToList();
 
+    [HttpGet("search-by-tag")]
+    public async Task<ActionResult<List<Product>>> SearchByTag(string query, int skip = 0, int take = 1000, CancellationToken ct = default) =>
+        (await repo.GetAll(restrict: x => x.Tags.Contains(query), ct: ct)).Skip(skip).Take(take).Select(IdHelper.HidePrivateId).ToList();
+
     [HttpGet("developer/{id}")]
     public async Task<ActionResult<List<Product>>> GetByDeveloper(Guid id, int skip = 0, int take = 1000, CancellationToken ct = default) =>
         (await repo.GetAll(restrict: x => x.DeveloperId == id.Deobfuscate().Id, ct: ct)).Skip(skip).Take(take).Select(IdHelper.HidePrivateId).ToList();
