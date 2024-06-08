@@ -20,7 +20,8 @@ public class Generator
         Guid.Parse("9dfe9b8f-4513-7c23-0e00-000000000000"),
         Guid.Parse("9dfe9b8f-4513-7c23-0f00-000000000000"),
         Guid.Parse("9dfe9b8f-4513-7c23-1000-000000000000"),
-        Guid.Parse("9dfe9b8f-4513-7c23-1100-000000000000")
+        Guid.Parse("9dfe9b8f-4513-7c23-1100-000000000000"),
+        Guid.Parse("9dfe9b8f-4513-7c23-1200-000000000000")
     ];
     private static readonly Random random = new Random();
     private const string DefaultCharacterSet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -86,12 +87,11 @@ public class Generator
         return (T)values.GetValue(random.Next(values.Length));
     }
     static int developerUserId = 1;
-
     public static Developer GenerateDeveloper() => new() 
     {
         Name = GenerateString(),
         Description = LoremIpsum(),
-        Website = GenerateString(),
+        ProfileImage = new List<string>() { "random.jpg", "lorem.jpg" }.ElementAt(random.Next(2)),
         UserGuids = [userGuids[random.Next(userGuids.Count)], userGuids[random.Next(userGuids.Count)]],
         SubscriptionPrice = GenerateInt()
     };
@@ -184,7 +184,7 @@ public class Generator
         {
             Name = "Cardboard Inc",
             Description = "cardboard",
-            Website = "www.example.com",
+            ProfileImage = "lorem.jpg",
             UserGuids = [userGuids[random.Next(userGuids.Count)], userGuids[0]] // d d
         });
         db.SaveChanges();
