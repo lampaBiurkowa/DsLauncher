@@ -13,9 +13,10 @@ namespace DsLauncher.Api;
 [ApiController]
 [Route("[controller]")]
 public class DeveloperController(
-    Repository<Developer> repository,
+    Repository<Developer> developerRepo,
+    Repository<Subscription> subscriptionRepo,
     DsStorageClientFactory dsStorage,
-    AccessContext context) : EntityController<Developer>(repository)
+    AccessContext context) : EntityController<Developer>(developerRepo)
 {
     [Authorize]
     [HttpPost]
@@ -60,6 +61,18 @@ public class DeveloperController(
         await repo.CommitAsync(ct);
 
         return Ok(filename);
+    }
+
+    [HttpGet]
+    [Authorize]
+    [Route("{guid}/user-subscribed")]
+    public async Task<ActionResult<bool>> Subsribed(Guid guid, CancellationToken ct)
+    {
+        var userGuid = HttpContext.GetUserGuid();
+        if (userGuid == null) return Unauthorized();
+        
+        var subscriptions = await subscriptionRepo.GetAll(restrict: x => x.UserGuid == userGuid && x.DeveloperGuid == guid, ct: ct);
+        return Ok(subscriptions.Count != 0);
     }
 
     async Task<bool> BelongsToDeveloper(Guid developerGuid, CancellationToken ct)
