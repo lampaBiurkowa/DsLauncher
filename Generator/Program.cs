@@ -104,7 +104,8 @@ public class Generator
         Image = GenerateString(),
         CreatedAt = DateTime.Now,
         UpdatedAt = DateTime.Now,
-        Product = product
+        Product = product,
+        IsPublic = true
     };
 
     public static App GenerateApp(Developer developer, string? name = null, int imageCount = 0) => new() 

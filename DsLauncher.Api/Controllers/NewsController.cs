@@ -37,17 +37,23 @@ public class NewsController(Repository<News> repository, AccessContext context) 
         return await base.Delete(guid, ct);
     }
 
+    [HttpGet]
+    public override async Task<ActionResult<List<News>>> Get(int skip = 0, int take = 1000, CancellationToken ct = default) =>
+        Ok((await repo.GetAll(restrict: x => x.IsPublic, ct: ct)).Select(x => IdHelper.HidePrivateId(x)));
+
     [HttpGet("product/{guid}")]
-    public async Task<ActionResult<List<News>>> GetByProduct(Guid guid, CancellationToken ct)
+    public async Task<ActionResult<List<News>>> GetByProduct(Guid guid, bool publicOnly = true, CancellationToken ct = default)
     {
-        var news = await repo.GetAll(restrict: x => x.ProductId == guid.Deobfuscate().Id, ct: ct);
+        var news = await repo.GetAll(restrict: x => x.ProductId == guid.Deobfuscate().Id && !publicOnly || x.IsPublic, ct: ct);
         return Ok(news.Select(x => IdHelper.HidePrivateId(x)));
     }
     
     [HttpGet("developer/{guid}")]
-    public async Task<ActionResult<List<News>>> GetByDeveloper(Guid guid, CancellationToken ct)
+    public async Task<ActionResult<List<News>>> GetByDeveloper(Guid guid, bool publicOnly = true, CancellationToken ct = default)
     {
-        var news = await repo.GetAll(restrict: x => x.Product != null && x.Product.DeveloperId == guid.Deobfuscate().Id, expand: [x => x.Product], ct: ct);
+        var news = await repo.GetAll(
+            restrict: x => x.Product != null && x.Product.DeveloperId == guid.Deobfuscate().Id && !publicOnly || x.IsPublic,
+            expand: [x => x.Product], ct: ct);
         return Ok(news.Select(x => IdHelper.HidePrivateId(x)));
     }
 

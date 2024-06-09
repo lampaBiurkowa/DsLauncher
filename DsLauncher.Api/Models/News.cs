@@ -14,6 +14,7 @@ public class News : Entity, ISoftDelete, ITimeStamped
     public Guid? ProductGuid { get; set; }
     [DsLong]
     public long? ProductId { get; set; }
+    public bool IsPublic { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
