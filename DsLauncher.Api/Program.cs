@@ -36,7 +36,6 @@ builder.Services.AddSwaggerGen(c => {
     };
 
     c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         { jwtSecurityScheme, Array.Empty<string>() }
@@ -48,9 +47,11 @@ builder.Configuration.AddDsSftpLib(builder.Services, true);
 builder.Services.AddDbContext<DbContext, DsLauncherContext>();
 builder.Services.AddSingleton<CacheService>();
 builder.Services.AddMemoryCache();
+builder.Services.AddOptions<DsDbLibOptions>()
+    .Bind(builder.Configuration.GetSection(DsDbLibOptions.SECTION))
+    .ValidateDataAnnotations();
 var entityTypes = new List<Type>();
 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-Developer a; //█▬█ █ ▀█▀
 PurchasedEvent b; //█▬█ █ ▀█▀
 foreach (var assembly in assemblies)
 {
