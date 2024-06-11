@@ -1,5 +1,6 @@
 using DibBase.Infrastructure;
 using DibBase.ModelBase;
+using DibBase.Options;
 using DsLauncher.Infrastructure;
 using DsLauncher.Api.Models;
 using DsCore.ApiClient;
@@ -13,6 +14,9 @@ using System.Text.Json.Serialization;
 using DsLauncher.Api;
 using DsNotifier.Client;
 using DsLauncher.Events;
+using DsLauncher.Api.Models;
+using Microsoft.Extensions.Options;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
