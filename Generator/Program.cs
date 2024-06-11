@@ -1,6 +1,9 @@
-﻿using System.Text;
+﻿using DibBase.Options;
+using System.Text;
 using DsLauncher.Infrastructure;
 using DsLauncher.Api.Models;
+using Microsoft.Extensions.Options;
+
 public class Generator
 {
     static List<Guid> userGuids = [
@@ -175,7 +178,7 @@ public class Generator
 
     public static void Main()
     {
-        var db = new DsLauncherContext();
+        var db = new DsLauncherContext(Options.Create(new DsDbLibOptions { DatabaseName = "DsCore", Password = "root", User = "root", Host = "localhost", ObfuscationKey = ""}));
         db.Database.EnsureDeleted();
         db.Database.EnsureCreated();
 

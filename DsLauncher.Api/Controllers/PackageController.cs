@@ -44,7 +44,7 @@ public class PackageController(Repository<Package> repository, AccessContext con
     public async Task<ActionResult<Package?>> GetLatest(Guid productId, CancellationToken ct)
     {
         var result = (await repo.GetAll(restrict: x => x.ProductId == productId.Deobfuscate().Id, ct: ct)).MaxBy(x => x.CreatedAt);
-        if (result == null) return Ok(null);
+        if (result == null) return Ok();
 
         IdHelper.HidePrivateId(result);
         return Ok(result);
