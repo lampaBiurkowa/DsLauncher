@@ -1,6 +1,7 @@
 using DibBase.Extensions;
 using DibBase.Infrastructure;
 using DibBaseApi;
+using DibBaseSampleApi.Controllers;
 using DsCore.ApiClient;
 using DsLauncher.Api.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -10,44 +11,35 @@ namespace DsLauncher.Api;
 
 [ApiController]
 [Route("[controller]")]
-public class NewsController(Repository<News> repo, AccessContext context) : ControllerBase //: EntityController<News>(repository)
+public class NewsController(Repository<News> repo, AccessContext context) : EntityController<News>(repo)
 {
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Guid>> Add(News entity, IFormFile file, CancellationToken ct)
+    public override async Task<ActionResult<Guid>> Add(News entity, CancellationToken ct)
     {
         if (!await OperationAllowed(entity.Guid, ct)) return Unauthorized();
         
-        await repo.InsertAsync(entity, ct);
-        await repo.CommitAsync(ct);
-        return Ok();
+        return await base.Add(entity, ct);
     }
 
     [Authorize]
     [HttpPut]
-    public async Task<ActionResult<Guid>> Update(News entity, CancellationToken ct)
+    public override async Task<ActionResult<Guid>> Update(News entity, CancellationToken ct)
     {
         if (!await OperationAllowed(entity.Guid, ct)) return Unauthorized();
 
-        await repo.UpdateAsync(entity, ct);
-        await repo.CommitAsync(ct);
-        return Ok(entity.Guid);
+        return await base.Add(entity, ct);
     }
 
     [Authorize]
     [HttpDelete]
-    public async Task<IActionResult> Delete(Guid guid, CancellationToken ct)
+    public  override async Task<IActionResult> Delete(Guid guid, CancellationToken ct)
     {
         if (!await OperationAllowed(guid, ct)) return Unauthorized();
-        await repo.DeleteAsync(guid.Deobfuscate().Id, ct);
-        await repo.CommitAsync(ct);
-        return Ok();
+        
+        return await base.Delete(guid, ct);
     }
-
-    [HttpGet]
-    public async Task<ActionResult<List<News>>> Get(int skip = 0, int take = 1000, CancellationToken ct = default) =>
-        Ok((await repo.GetAll(skip, take, x => x.IsPublic, ct: ct)).Select(x => IdHelper.HidePrivateId(x)));
-
+    
     [HttpGet("product/{guid}")]
     public async Task<ActionResult<List<News>>> GetByProduct(Guid guid, bool publicOnly = true, CancellationToken ct = default)
     {

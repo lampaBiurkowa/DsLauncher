@@ -178,7 +178,7 @@ public class Generator
 
     public static void Main()
     {
-        var db = new DsLauncherContext(Options.Create(new DsDbLibOptions { DatabaseName = "DsCore", Password = "root", User = "root", Host = "localhost", ObfuscationKey = ""}));
+        var db = new DsLauncherContext(Options.Create(new DsDbLibOptions { DatabaseName = "DsLauncher", Password = "root", User = "root", Host = "localhost", ObfuscationKey = ""}));
         db.Database.EnsureDeleted();
         db.Database.EnsureCreated();
 
