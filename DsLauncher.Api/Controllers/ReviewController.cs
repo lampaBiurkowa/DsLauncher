@@ -49,8 +49,8 @@ public class ReviewController(Repository<Review> repository) : EntityController<
 
     [HttpGet]
     [Route("product/{productId}/user/{userId}")]
-    public async Task<ActionResult<List<Review>>> GetByProductAndUser(Guid id, Guid userId, int skip = 0, int take = 1000, CancellationToken ct = default) =>
-        (await repo.GetAll(restrict: x => x.ProductId == id.Deobfuscate().Id && x.UserGuid == userId, ct: ct)).Skip(skip).Take(take).ToList();
+    public async Task<ActionResult<List<Review>>> GetByProductAndUser(Guid productId, Guid userId, int skip = 0, int take = 1000, CancellationToken ct = default) =>
+        (await repo.GetAll(restrict: x => x.ProductId == productId.Deobfuscate().Id && x.UserGuid == userId, ct: ct)).Skip(skip).Take(take).ToList();
 
     [HttpGet]
     [Route("product/{id}/breakdown")]
