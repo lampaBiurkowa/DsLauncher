@@ -287,9 +287,8 @@ public class NdibService(
         product.ImageCount = ndibData.Images.Count;
     }
 
-    public MemoryStream DownloadWholeProduct(Guid productGuid, Guid packageGuid, Platform platform)
+    public void DownloadWholeProduct(MemoryStream stream, Guid productGuid, Guid packageGuid, Platform platform)
     {
-        using var stream = new MemoryStream();
         var remotePath = PathsResolver.GetWholeProductZipPath(productGuid, packageGuid, platform);
         if (sftpClient.Exists(remotePath))
             sftpClient.DownloadFile(stream, remotePath);
@@ -302,7 +301,5 @@ public class NdibService(
             sftpClient.UploadStream(stream, remotePath);
             Directory.Delete(tempSourcesPath, true);
         }
-
-        return stream;
     }
 }

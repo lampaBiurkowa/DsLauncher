@@ -47,12 +47,19 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         
         HttpContext.Response.Headers.Append(LATEST_PACKAGE_GUID_HEADER, latestPackage.Guid.ToString());
         
-        return File(ndibService.DownloadWholeProduct(productGuid, latestPackage.Guid, platform), "application/zip", PathsResolver.RESULT_FILE);
+        using var stream = new MemoryStream();
+        ndibService.DownloadWholeProduct(stream, productGuid, latestPackage.Guid, platform);
+        return File(stream, "application/zip", PathsResolver.RESULT_FILE);
     }
 
     [HttpGet("download/whole/{productGuid}/{platform}/{packageGuid}")]
-    public ActionResult GetWholeVersion(Guid productGuid, Platform platform, Guid packageGuid) =>
-        File(ndibService.DownloadWholeProduct(productGuid, packageGuid, platform), "application/zip", PathsResolver.RESULT_FILE);
+    public ActionResult GetWholeVersion(Guid productGuid, Platform platform, Guid packageGuid)
+    {
+        using var stream = new MemoryStream();
+        ndibService.DownloadWholeProduct(stream, productGuid, packageGuid, platform);
+        return File(stream, "application/zip", PathsResolver.RESULT_FILE);
+    }
+
 
     [DisableRequestSizeLimit]
     [HttpPost("upload")]
