@@ -16,6 +16,7 @@ using DsNotifier.Client;
 using DsLauncher.Events;
 using DsLauncher.Api.Models;
 using Microsoft.Extensions.Options;
+using DsLauncher.Api.Options;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,6 +54,9 @@ builder.Services.AddSingleton<CacheService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddOptions<DsDbLibOptions>()
     .Bind(builder.Configuration.GetSection(DsDbLibOptions.SECTION))
+    .ValidateDataAnnotations();
+builder.Services.AddOptions<LauncherOptions>()
+    .Bind(builder.Configuration.GetSection(LauncherOptions.SECTION))
     .ValidateDataAnnotations();
 var entityTypes = new List<Type>();
 var assemblies = AppDomain.CurrentDomain.GetAssemblies();

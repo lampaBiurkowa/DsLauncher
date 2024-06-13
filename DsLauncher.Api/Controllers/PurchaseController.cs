@@ -6,6 +6,8 @@ using DsLauncher.Events;
 using DsLauncher.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using DsLauncher.Api.Options;
+using Microsoft.Extensions.Options;
 
 namespace DsLauncher.Api;
 
@@ -18,11 +20,10 @@ public class PurchaseController(
     Repository<Subscription> subscriptionRepo,
     Repository<License> licenseRepo,
     Repository<Developer> developerRepo,
+    IOptions<LauncherOptions> options,
     CacheService cache) : ControllerBase
 {
     const string DEFAULT_CURRENCY = "Ruble";
-    const float DEVELOPER_ACCESS_PRICE = 5;
-    readonly TimeSpan DeveloperAccessPaymentInterval = TimeSpan.FromDays(30);
 
     [Authorize]
     [HttpPost("product/{guid}")]
@@ -72,9 +73,9 @@ public class PurchaseController(
         var result = await client.Billing_AddCyclicFeeAsync(new()
         {
             UserGuid = (Guid)userGuid,
-            Value = -DEVELOPER_ACCESS_PRICE,
+            Value = -options.Value.DeveloperAccessPrice,
             CurrencyGuid = await cache.GetCurrencyGuid(DEFAULT_CURRENCY, ct)
-        }, DeveloperAccessPaymentInterval, ct);
+        }, options.Value.CyclicPaymentInterval, ct);
 
         if (result == null) return Ok(false);
         
@@ -111,9 +112,9 @@ public class PurchaseController(
         var result = await client.Billing_AddCyclicFeeAsync(new()
         {
             UserGuid = (Guid)userGuid,
-            Value = -DEVELOPER_ACCESS_PRICE,
+            Value = -options.Value.DeveloperAccessPrice,
             CurrencyGuid = await cache.GetCurrencyGuid(DEFAULT_CURRENCY, ct)
-        }, DeveloperAccessPaymentInterval, ct);
+        }, options.Value.CyclicPaymentInterval, ct);
 
         if (result == null) return Problem();
 
@@ -127,6 +128,9 @@ public class PurchaseController(
 
         return Ok(password); // :D/
     }
+
+    [HttpGet("developer-access/price")]
+    public ActionResult<float> GetDeveloperAccessPrice() => Ok(options.Value.DeveloperAccessPrice);
 
     [Authorize]
     [HttpPost("subscribe-developer/{guid}")]
@@ -144,7 +148,7 @@ public class PurchaseController(
             UserGuid = (Guid)userGuid,
             Value = -developer.SubscriptionPrice,
             CurrencyGuid = await cache.GetCurrencyGuid(DEFAULT_CURRENCY, ct)
-        }, DeveloperAccessPaymentInterval, ct);
+        }, options.Value.CyclicPaymentInterval, ct);
 
         if (result == null) return Problem();
 
