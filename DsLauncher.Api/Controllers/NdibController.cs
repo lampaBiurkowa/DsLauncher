@@ -47,18 +47,16 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         
         HttpContext.Response.Headers.Append(LATEST_PACKAGE_GUID_HEADER, latestPackage.Guid.ToString());
         
-        using var stream = new MemoryStream();
+        var stream = new MemoryStream();
         ndibService.DownloadWholeProduct(stream, productGuid, latestPackage.Guid, platform);
-        stream.Position = 0;
         return new FileStreamResult(stream, "application/zip") { FileDownloadName = PathsResolver.RESULT_FILE };
     }
 
     [HttpGet("download/whole/{productGuid}/{platform}/{packageGuid}")]
     public ActionResult GetWholeVersion(Guid productGuid, Platform platform, Guid packageGuid)
     {
-        using var stream = new MemoryStream();
+        var stream = new MemoryStream();
         ndibService.DownloadWholeProduct(stream, productGuid, packageGuid, platform);
-        stream.Position = 0;
         return new FileStreamResult(stream, "application/zip") { FileDownloadName = PathsResolver.RESULT_FILE };
     }
 
