@@ -214,7 +214,7 @@ public class NdibService(
         }
     
         var patchTempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
-        var zipTempPath = Path.GetTempPath();
+        var zipTempPath = Path.GetTempFileName();
         Directory.CreateDirectory(patchTempPath);
 
         var srcPath = PathsResolver.GetVersionPath(src.ProductGuid, src.Guid);
@@ -289,7 +289,7 @@ public class NdibService(
 
     public FileStream DownloadWholeProduct(Guid productGuid, Guid packageGuid, Platform platform)
     {
-        var tempZipPath = Path.GetTempPath();
+        var tempZipPath = Path.GetTempFileName();
         var remotePath = PathsResolver.GetWholeProductZipPath(productGuid, packageGuid, platform);
         if (sftpClient.Exists(remotePath))
             sftpClient.DownloadFile(tempZipPath, remotePath);
