@@ -36,12 +36,16 @@ public class NdibService(
         {
             string destinationPath = Path.Combine(tempPath, entry.FullName);
 
+            Console.WriteLine($"beka {entry.FullName};");
             if (entry.FullName.Equals(metadataPath, StringComparison.OrdinalIgnoreCase))
             {
                 using var entryStream = entry.Open();
                 using var reader = new StreamReader(entryStream);
+                Console.WriteLine("aaa");
                 var textContent = await reader.ReadToEndAsync(ct);
+                Console.WriteLine("bbb");
                 ndibData = JsonConvert.DeserializeObject<NdibData>(textContent);
+                Console.WriteLine("beka");
             }
             else
             {
