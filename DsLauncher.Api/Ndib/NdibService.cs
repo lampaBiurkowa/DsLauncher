@@ -287,24 +287,22 @@ public class NdibService(
         product.ImageCount = ndibData.Images.Count;
     }
 
-    public FileStream DownloadWholeProduct(Guid productGuid, Guid packageGuid, Platform platform)
+    public MemoryStream DownloadWholeProduct(Guid productGuid, Guid packageGuid, Platform platform)
     {
-        var tempZipPath = Path.GetTempFileName();
+        using var stream = new MemoryStream();
         var remotePath = PathsResolver.GetWholeProductZipPath(productGuid, packageGuid, platform);
         if (sftpClient.Exists(remotePath))
-            sftpClient.DownloadFile(tempZipPath, remotePath);
+            sftpClient.DownloadFile(stream, remotePath);
         else
         {
             var tempSourcesPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
             sftpClient.DownloadDirectory(tempSourcesPath, PathsResolver.GetVersionPath(productGuid, packageGuid));
             sftpClient.DownloadDirectory(tempSourcesPath, PathsResolver.GetVersionPath(productGuid, packageGuid, platform));
-            ZipFile.CreateFromDirectory(tempSourcesPath, tempZipPath);
-            sftpClient.UploadFile(tempZipPath, remotePath);
+            ZipFile.CreateFromDirectory(tempSourcesPath, stream);
+            sftpClient.UploadStream(stream, remotePath);
             Directory.Delete(tempSourcesPath, true);
         }
 
-        var stream = File.OpenRead(tempZipPath);
-        File.Delete(tempZipPath);
         return stream;
     }
 }
