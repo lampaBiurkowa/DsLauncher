@@ -18,6 +18,7 @@ public class DsLauncherContext(IOptions<DsDbLibOptions> options) : DibContext
     public DbSet<App> App { get; set; }
     public DbSet<Purchase> Purchase { get; set; }
     public DbSet<Review> Review { get; set; }
+    public DbSet<License> License { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

@@ -58,20 +58,15 @@ public class PurchaseController(
     }
 
     [Authorize]
-    [HttpPost("developer-access/{guid}")]
-    public async Task<ActionResult<bool>> PurchaseDeveloperAccess(Guid guid, string developerKey, CancellationToken ct)
+    [HttpPost("developer-access")]
+    public async Task<ActionResult<bool>> PurchaseDeveloperAccess(string developerKey, CancellationToken ct)
     {
         var userGuid = HttpContext.GetUserGuid();
         if (userGuid == null) return Unauthorized();
 
-        var developer = await developerRepo.GetById(guid.Deobfuscate().Id, ct: ct);
-        if (developer == null) return Problem();
-
-        var license = (await licenseRepo.GetAll(restrict: x => x.DeveloperId == guid.Deobfuscate().Id, ct: ct)).FirstOrDefault();
+        var passwordNewHash = SecretsBuilder.CreatePasswordHash(developerKey, string.Empty);
+        var license = (await licenseRepo.GetAll(restrict: x => x.Key == passwordNewHash, ct: ct)).FirstOrDefault();
         if (license == null) return Unauthorized();
-
-        var passwordNewHash = SecretsBuilder.CreatePasswordHash(developerKey, license.Salt);
-        if (license.Key != passwordNewHash) return Unauthorized();
 
         var client = dsCoreClientFactory.CreateClient(HttpContext.GetBearerToken()!);
         var result = await client.Billing_AddCyclicFeeAsync(new()
@@ -83,16 +78,20 @@ public class PurchaseController(
 
         if (result == null) return Ok(false);
         
+        
+        var developer = await developerRepo.GetById(license.DeveloperId, ct: ct);
+        if (developer == null) return Problem();
+
         developer.UserGuids.Add((Guid)userGuid);
         await developerRepo.UpdateAsync(developer, ct);
-        await developerRepo.RegisterEvent(new BecameDeveloperEvent { DeveloperGuid = guid, UserGuid = (Guid)userGuid }, ct);
+        await developerRepo.RegisterEvent(new BecameDeveloperEvent { DeveloperGuid = developer.Guid, UserGuid = (Guid)userGuid }, ct);
         await developerRepo.CommitAsync(ct);
 
         return Ok(true);
     }
 
     [Authorize]
-    [HttpPost("developer-access")]
+    [HttpPost("developer-access/new")]
     public async Task<ActionResult<string>> RegisterDeveloperAccess(Developer developer, CancellationToken ct)
     {
         var userGuid = HttpContext.GetUserGuid();
@@ -100,12 +99,10 @@ public class PurchaseController(
 
         developer.UserGuids = [];
         var password = SecretsBuilder.GenerateSalt(32);
-        var salt = SecretsBuilder.GenerateSalt(16);
-        var passwordHash = SecretsBuilder.CreatePasswordHash(password, salt);
+        var passwordHash = SecretsBuilder.CreatePasswordHash(password, string.Empty);
         await licenseRepo.InsertAsync(new()
         {
             Key = passwordHash,
-            Salt = salt,
             Developer = developer
         }, ct);
         await licenseRepo.CommitAsync(ct);

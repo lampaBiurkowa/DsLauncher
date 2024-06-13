@@ -8,7 +8,6 @@ public class LicenseEntityTypeConfiguration : IEntityTypeConfiguration<License>
 {
     public void Configure(EntityTypeBuilder<License> builder)
     {
-        builder.Property(x => x.Salt).IsRequired();
         builder.Property(x => x.DeveloperId).IsRequired();
         builder.Property(x => x.Key).IsRequired();
     }
