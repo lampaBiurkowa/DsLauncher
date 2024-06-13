@@ -69,7 +69,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         var developer = await ndibService.GetUserDeveloper(HttpContext.GetUserGuid(), ct);
         if (developer == null) return Unauthorized();
 
-        var metadataTempPath = Guid.NewGuid().ToString();
+        var metadataTempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
         var ndibData = await ndibService.ExtractZipToTemp(metadataFile, metadataTempPath, ct);
         if (ndibData == null) return Problem();
         
@@ -97,7 +97,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
     {
         if (metadataFile == null || metadataFile.Length == 0) return BadRequest("No file uploaded.");
 
-        var tempPath = Guid.NewGuid().ToString();
+        var tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
         var ndibData = await ndibService.ExtractZipToTemp(metadataFile, tempPath, ct);
         if (ndibData == null) return Problem();
 
