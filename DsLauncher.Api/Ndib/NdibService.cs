@@ -49,7 +49,7 @@ public class NdibService(
                 if (parentDir != null && !Directory.Exists(parentDir)) Directory.CreateDirectory(parentDir);
                 
                 if (!entry.FullName.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
-                    entry.ExtractToFile(destinationPath, overwrite: false);
+                    entry.ExtractToFile(destinationPath, overwrite: true);
             }
         }
 
