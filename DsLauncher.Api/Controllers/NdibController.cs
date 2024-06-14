@@ -49,6 +49,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         
         var stream = new MemoryStream();
         ndibService.DownloadWholeProduct(stream, productGuid, latestPackage.Guid, platform);
+        stream.Position = 0;
         return new FileStreamResult(stream, "application/zip") { FileDownloadName = PathsResolver.RESULT_FILE };
     }
 
@@ -57,6 +58,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
     {
         var stream = new MemoryStream();
         ndibService.DownloadWholeProduct(stream, productGuid, packageGuid, platform);
+        stream.Position = 0;
         return new FileStreamResult(stream, "application/zip") { FileDownloadName = PathsResolver.RESULT_FILE };
     }
 
