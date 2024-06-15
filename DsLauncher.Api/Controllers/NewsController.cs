@@ -4,6 +4,7 @@ using DibBaseApi;
 using DibBaseSampleApi.Controllers;
 using DsCore.ApiClient;
 using DsLauncher.Api.Models;
+using DsStorage.ApiClient;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,10 @@ namespace DsLauncher.Api;
 
 [ApiController]
 [Route("[controller]")]
-public class NewsController(Repository<News> repo, AccessContext context) : EntityController<News>(repo)
+public class NewsController(
+    Repository<News> repo,
+    DsStorageClientFactory dsStorage,
+    AccessContext context) : EntityController<News>(repo)
 {
     [Authorize]
     [HttpPost]
@@ -54,6 +58,20 @@ public class NewsController(Repository<News> repo, AccessContext context) : Enti
             restrict: x => x.Product != null && x.Product.DeveloperId == guid.Deobfuscate().Id && !publicOnly || x.IsPublic,
             expand: [x => x.Product], ct: ct);
         return Ok(news.Select(x => IdHelper.HidePrivateId(x)));
+    }
+
+    [HttpPost]
+    [Authorize]
+    [Route("{guid}/Upload")]
+    public async Task<ActionResult<string>> Upload(Guid guid, IFormFile file, CancellationToken ct)
+    {
+        if (!await OperationAllowed(guid, ct)) return Unauthorized();
+    
+        const string newsFolder = "news";
+        var filename = await dsStorage.CreateClient().Storage_UploadFileToBucketAsync
+            (nameof(DsLauncher), new DsStorage.ApiClient.FileParameter(file.OpenReadStream(), file.FileName, file.ContentType), newsFolder, ct);
+
+        return Ok($"{newsFolder}/filename");
     }
 
     async Task<bool> OperationAllowed(Guid newsGuid, CancellationToken ct)

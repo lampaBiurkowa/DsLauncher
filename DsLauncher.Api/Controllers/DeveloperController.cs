@@ -53,8 +53,9 @@ public class DeveloperController(
         var developer = await repo.GetById(guid.Deobfuscate().Id, ct: ct);
         if (developer == null) return Unauthorized();
         
-        var client = dsStorage.CreateClient();
-        var filename = await client.Storage_UploadFileToDefaultBucketAsync(new DsStorage.ApiClient.FileParameter(file.OpenReadStream(), file.FileName, file.ContentType), ct);
+        const string developerFolder = "developer";
+        var filename = await dsStorage.CreateClient().Storage_UploadFileToBucketAsync
+            (nameof(DsLauncher), new DsStorage.ApiClient.FileParameter(file.OpenReadStream(), file.FileName, file.ContentType), developerFolder, ct);
         
         developer.ProfileImage = filename;
         await repo.UpdateAsync(developer, ct);
