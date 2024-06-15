@@ -60,7 +60,6 @@ builder.Services.AddOptions<LauncherOptions>()
     .ValidateDataAnnotations();
 var entityTypes = new List<Type>();
 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-PurchasedEvent b; //█▬█ █ ▀█▀
 foreach (var assembly in assemblies)
 {
     entityTypes.AddRange(assembly.GetTypes().Where(type => type.IsSubclassOf(typeof(DibBase.ModelBase.Entity))).ToList());

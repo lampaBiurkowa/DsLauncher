@@ -24,6 +24,7 @@ public class PurchaseController(
     CacheService cache) : ControllerBase
 {
     const string DEFAULT_CURRENCY = "Ruble";
+    readonly TimeSpan licenseValidity = TimeSpan.FromMinutes(5);
 
     [Authorize]
     [HttpPost("product/{guid}")]
@@ -66,7 +67,7 @@ public class PurchaseController(
         if (userGuid == null) return Unauthorized();
 
         var passwordNewHash = SecretsBuilder.CreatePasswordHash(developerKey, string.Empty);
-        var license = (await licenseRepo.GetAll(restrict: x => x.Key == passwordNewHash, ct: ct)).FirstOrDefault();
+        var license = (await licenseRepo.GetAll(restrict: x => x.Key == passwordNewHash && x.ValidTo < DateTime.UtcNow, ct: ct)).FirstOrDefault();
         if (license == null) return Unauthorized();
 
         var client = dsCoreClientFactory.CreateClient(HttpContext.GetBearerToken()!);
@@ -98,16 +99,6 @@ public class PurchaseController(
         var userGuid = HttpContext.GetUserGuid();
         if (userGuid == null) return Unauthorized();
 
-        developer.UserGuids = [];
-        var password = SecretsBuilder.GenerateSalt(32);
-        var passwordHash = SecretsBuilder.CreatePasswordHash(password, string.Empty);
-        await licenseRepo.InsertAsync(new()
-        {
-            Key = passwordHash,
-            Developer = developer
-        }, ct);
-        await licenseRepo.CommitAsync(ct);
-
         var client = dsCoreClientFactory.CreateClient(HttpContext.GetBearerToken()!);
         var result = await client.Billing_AddCyclicFeeAsync(new()
         {
@@ -118,13 +109,27 @@ public class PurchaseController(
 
         if (result == null) return Problem();
 
-        developer.UserGuids.Add((Guid)userGuid);
+        developer.UserGuids = [((Guid)userGuid)];
         await developerRepo.UpdateAsync(developer, ct);
-        await developerRepo.CommitAsync(ct);
-
-        //TODO wrap in a parent transaction
         await developerRepo.RegisterEvent(new BecameDeveloperEvent { DeveloperGuid = developer.Guid, UserGuid = (Guid)userGuid }, ct);
         await developerRepo.CommitAsync(ct);
+
+        return Ok();
+    }
+
+    [Authorize]
+    [HttpGet("developer-access/{guid}/generate-key")]
+    public async Task<ActionResult<string>> GenerateKey(Guid guid, CancellationToken ct)
+    {
+        var password = SecretsBuilder.GenerateSalt(32);
+        var passwordHash = SecretsBuilder.CreatePasswordHash(password, string.Empty);
+        await licenseRepo.InsertAsync(new()
+        {
+            Key = passwordHash,
+            DeveloperId = guid.Deobfuscate().Id,
+            ValidTo = DateTime.UtcNow + licenseValidity
+        }, ct);
+        await licenseRepo.CommitAsync(ct);
 
         return Ok(password); // :D/
     }

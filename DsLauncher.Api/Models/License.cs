@@ -11,4 +11,5 @@ public class License : Entity
     [DsLong]
     public long DeveloperId { get; set; }
     public Developer? Developer { get; set; }
+    public DateTime ValidTo { get; set; }
 }
