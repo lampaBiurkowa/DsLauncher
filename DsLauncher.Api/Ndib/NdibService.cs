@@ -217,16 +217,16 @@ public class NdibService(
         var zipTempPath = Path.GetTempFileName();
         Directory.CreateDirectory(patchTempPath);
 
-        var srcPath = PathsResolver.GetVersionPath(src.ProductGuid, src.Guid);
-        var dstPath = PathsResolver.GetVersionPath(dst.ProductGuid, dst.Guid);
-        sftpClient.DownloadDirectory(srcPath, srcPath);
-        sftpClient.DownloadDirectory(dstPath, dstPath);
+        var srcPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
+        var dstPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
+        sftpClient.DownloadDirectory(srcPath, PathsResolver.GetVersionPath(src.ProductGuid, src.Guid));
+        sftpClient.DownloadDirectory(dstPath, PathsResolver.GetVersionPath(dst.ProductGuid, dst.Guid));
         await PatchBuilder.CreatePatch(src, dst, patchTempPath, ct: ct);
 
-        var srcPlatformSpecificPath = PathsResolver.GetVersionPath(src.ProductGuid, src.Guid, platform);
-        var dstPlatformSpecificPath = PathsResolver.GetVersionPath(dst.ProductGuid, dst.Guid, platform);
-        sftpClient.DownloadDirectory(srcPlatformSpecificPath, srcPlatformSpecificPath);
-        sftpClient.DownloadDirectory(dstPlatformSpecificPath, dstPlatformSpecificPath);
+        var srcPlatformSpecificPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
+        var dstPlatformSpecificPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
+        sftpClient.DownloadDirectory(srcPlatformSpecificPath, PathsResolver.GetVersionPath(src.ProductGuid, src.Guid, platform));
+        sftpClient.DownloadDirectory(dstPlatformSpecificPath, PathsResolver.GetVersionPath(dst.ProductGuid, dst.Guid, platform));
         await PatchBuilder.CreatePatch(src, dst, patchTempPath, platform, ct);
 
         if (File.Exists(zipTempPath))
@@ -244,6 +244,8 @@ public class NdibService(
 
         Directory.Delete(srcPath, true);
         Directory.Delete(dstPath, true);
+        Directory.Delete(srcPlatformSpecificPath, true);
+        Directory.Delete(dstPlatformSpecificPath, true);
         Directory.Delete(patchTempPath, true);
         File.Delete(zipTempPath);
 
