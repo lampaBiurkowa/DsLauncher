@@ -49,5 +49,5 @@ public class GameController(Repository<Game> repo, Repository<Purchase> purchase
 
     [HttpGet("ids")]
     public async Task<ActionResult<IEnumerable<Guid>>> GetIds(int skip = 0, int take = 0, CancellationToken ct = default)
-        => Ok((await repo.GetAll(skip, take, ct: ct)).Select(x => x.Id));
+        => Ok((await repo.GetAll(skip, take, ct: ct)).Select(x => x.Guid));
 }
