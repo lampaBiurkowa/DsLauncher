@@ -298,6 +298,7 @@ public class NdibService(
             sftpClient.DownloadDirectory(tempSourcesPath, PathsResolver.GetVersionPath(productGuid, packageGuid));
             sftpClient.DownloadDirectory(tempSourcesPath, PathsResolver.GetVersionPath(productGuid, packageGuid, platform));
             ZipFile.CreateFromDirectory(tempSourcesPath, stream);
+            stream.Position = 0;
             sftpClient.UploadStream(stream, remotePath);
             Directory.Delete(tempSourcesPath, true);
         }
