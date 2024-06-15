@@ -82,7 +82,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         var ndibData = await ndibService.ExtractZipToTemp(metadataFile, metadataTempPath, ct);
         if (ndibData == null) return Problem();
         
-        var product = (await productRepo.GetAll(restrict: x => x.Name == ndibData.Name, expand: [x => x.Developer!], ct: ct)).FirstOrDefault();
+        var product = (await productRepo.GetAll(restrict: x => x.Name == ndibData.Name, expand: [x => x.Developer], ct: ct)).FirstOrDefault();
         Package newPackage;
         if (product == null)
             newPackage = await ndibService.PersistPackage(ndibData, developer.Id, ct);
@@ -110,7 +110,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         var ndibData = await ndibService.ExtractZipToTemp(metadataFile, tempPath, ct);
         if (ndibData == null) return Problem();
 
-        var product = await productRepo.GetById(productGuid.Deobfuscate().Id, [x => x.Developer!], ct);
+        var product = await productRepo.GetById(productGuid.Deobfuscate().Id, [x => x.Developer], ct);
         if (product == null) return Problem();
         if (!ndibService.UserIsFromDeveloper(HttpContext.GetUserGuid(), product.Developer!)) return Unauthorized();
 

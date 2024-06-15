@@ -64,7 +64,7 @@ public class PackageController(Repository<Package> repository, AccessContext con
         var userGuid = HttpContext.GetUserGuid();
         if (userGuid == null) return false;
 
-        var item = await repo.GetById(packageGuid.Deobfuscate().Id, [x => x.Product!], ct);
+        var item = await repo.GetById(packageGuid.Deobfuscate().Id, [x => x.Product], ct);
         if (item == null) return false;
         repo.Clear();
 

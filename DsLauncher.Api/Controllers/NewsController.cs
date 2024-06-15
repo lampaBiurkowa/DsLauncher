@@ -79,7 +79,7 @@ public class NewsController(
         var userGuid = HttpContext.GetUserGuid();
         if (userGuid == null) return false;
 
-        var item = await repo.GetById(newsGuid.Deobfuscate().Id, [x => x.Product!], ct);
+        var item = await repo.GetById(newsGuid.Deobfuscate().Id, [x => x.Product], ct);
         if (item == null) return false;
         repo.Clear();
 
