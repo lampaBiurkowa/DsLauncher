@@ -115,8 +115,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         if (product == null) return Problem();
         if (!ndibService.UserIsFromDeveloper(HttpContext.GetUserGuid(), product.Developer!)) return Unauthorized();
 
-        ndibService.ApplyNdibDataToProduct(product, ndibData);
-        await productRepo.UpdateAsync(product, ct);
+        await ndibService.AdaptProductToTypeAndUpdate(ndibData, product, ct);
         await productRepo.CommitAsync(ct);
         await ndibService.UploadImagesToStorage(ndibData, tempPath, productGuid, ct);
 
