@@ -64,6 +64,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
 
 
     [DisableRequestSizeLimit]
+    [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
     [HttpPost("upload")]
     public async Task<ActionResult> UploadNew(
         IFormFile coreFile,
