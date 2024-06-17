@@ -102,8 +102,17 @@ public class NdibService(
 
     public async Task<Package> PersistPackage(NdibData ndib, Product product, CancellationToken ct)
     {
+        if (product.ProductType == ProductType.Game)
+            product = await gameRepo.GetById(product.Id, ct: ct) ?? throw new($"No corresponding game for product {product.Id}");
+        else if (product.ProductType == ProductType.App)
+            product = await appRepo.GetById(product.Id, ct: ct) ?? throw new($"No corresponding app for product {product.Id}");
+
         ApplyNdibDataToProduct(product, ndib);
+        if (product.ProductType == ProductType.Game)
+            ((Game)product).ContentClassification = ndib.GetContentClassification();
+        
         await productRepo.UpdateAsync(product, ct);
+
         var newPackage = GetPackageFromNdibData(ndib, product);
         newPackage.Product = null;
         newPackage.ProductId = product.Id; //hzd ultra
@@ -112,21 +121,6 @@ public class NdibService(
         await packageRepo.CommitAsync(ct);
 
         return newPackage;
-    }
-
-    public async Task AddAsGame(NdibData ndib, Product product, CancellationToken ct)
-    {
-        var game = (Game)product;
-        game.ProductType = ProductType.Game;
-        game.ContentClassification = ndib.GetContentClassification();
-        await gameRepo.InsertAsync(game, ct);
-    }
-
-    public async Task AddAsApp(Product product, CancellationToken ct)
-    {
-        var app = (App)product;
-        app.ProductType = ProductType.App;
-        await appRepo.InsertAsync(app, ct);
     }
 
     public async Task<Developer?> GetUserDeveloper(Guid? userGuid, CancellationToken ct)
