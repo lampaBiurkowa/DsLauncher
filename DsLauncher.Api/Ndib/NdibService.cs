@@ -177,7 +177,8 @@ public class NdibService(
             Price = ndib.Price,
             Tags = string.Join(',', ndib.Tags),
             ImageCount = ndib.Images.Count,
-            ContentClassification = ndib.GetContentClassification()
+            ContentClassification = ndib.GetContentClassification(),
+            ProductType = ProductType.Game
         };
 
     static App GetAppFromNdibData(NdibData ndib, long developerId) => 
@@ -188,7 +189,8 @@ public class NdibService(
             Name = ndib.Name,
             Price = ndib.Price,
             Tags = string.Join(',', ndib.Tags),
-            ImageCount = ndib.Images.Count   
+            ImageCount = ndib.Images.Count,
+            ProductType = ProductType.App
         };
 
     static Package GetPackageFromNdibData(NdibData ndib, Product product) => 
