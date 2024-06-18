@@ -35,7 +35,7 @@ public class ActivityController(Repository<Activity> activityRepo, Repository<Ga
     }
 
     [Authorize]
-    [HttpPost("current-game/{userGuid}")]
+    [HttpGet("current-game/{userGuid}")]
     public async Task<ActionResult<Guid?>> GetCurrentGame(Guid userGuid, CancellationToken ct)
     {
         var results = await activityRepo.GetAll(restrict: x => x.UserGuid == userGuid && x.EndDate + ActivityLastingTreshold > DateTime.UtcNow, ct: ct);
@@ -45,7 +45,7 @@ public class ActivityController(Repository<Activity> activityRepo, Repository<Ga
     }
 
     [Authorize]
-    [HttpPost("get-minutes-spent/{productGuid}/{userGuid}")]
+    [HttpGet("get-minutes-spent/{productGuid}/{userGuid}")]
     public async Task<ActionResult> GetTimeSpent(Guid productGuid, Guid userGuid, CancellationToken ct)
     {
         var activities = await activityRepo.GetAll(restrict: x => x.UserGuid == userGuid && x.ProductId == productGuid.Deobfuscate().Id, ct: ct);
