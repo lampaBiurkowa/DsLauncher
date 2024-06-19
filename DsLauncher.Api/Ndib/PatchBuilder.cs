@@ -1,14 +1,11 @@
 using System.Security.Cryptography;
-using DsLauncher.Api.Models;
 
 namespace DsLauncher.Api.Ndib;
 
 public static class PatchBuilder
 {
-    public static async Task CreatePatch(Package srcPackage, Package dstPackage, string patchPath, Platform? platform = null, CancellationToken ct = default)
+    public static void CreatePatch(string srcVerPath, string dstVerPath, string patchPath, Platform? platform = null, CancellationToken ct = default)
     {
-        var srcVerPath = PathsResolver.GetVersionPath(srcPackage.ProductGuid, srcPackage.Guid, platform);
-        var dstVerPath = PathsResolver.GetVersionPath(dstPackage.ProductGuid, dstPackage.Guid, platform);
         var srcFiles = GetFileHashes(srcVerPath);
         var dstFiles = GetFileHashes(dstVerPath);
 
@@ -42,8 +39,6 @@ public static class PatchBuilder
 
             File.Copy(srcPath, dstPath, true);
         }
-
-        // await File.AppendAllLinesAsync($"{patchPath}/{PathsResolver.DELETED_FILES_FILE}", deletedFiles, ct);
     }
 
     static Dictionary<string, string> GetFileHashes(string directory)

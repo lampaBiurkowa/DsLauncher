@@ -223,13 +223,13 @@ public class NdibService(
         var dstPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
         sftpClient.DownloadDirectory(srcPath, PathsResolver.GetVersionPath(src.ProductGuid, src.Guid));
         sftpClient.DownloadDirectory(dstPath, PathsResolver.GetVersionPath(dst.ProductGuid, dst.Guid));
-        await PatchBuilder.CreatePatch(src, dst, patchTempPath, ct: ct);
+        PatchBuilder.CreatePatch(srcPath, dstPath, patchTempPath, ct: ct);
 
         var srcPlatformSpecificPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
         var dstPlatformSpecificPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");
         sftpClient.DownloadDirectory(srcPlatformSpecificPath, PathsResolver.GetVersionPath(src.ProductGuid, src.Guid, platform));
         sftpClient.DownloadDirectory(dstPlatformSpecificPath, PathsResolver.GetVersionPath(dst.ProductGuid, dst.Guid, platform));
-        await PatchBuilder.CreatePatch(src, dst, patchTempPath, platform, ct);
+        PatchBuilder.CreatePatch(srcPlatformSpecificPath, dstPlatformSpecificPath, patchTempPath, platform, ct);
 
         if (File.Exists(zipTempPath))
             File.Delete(zipTempPath);
