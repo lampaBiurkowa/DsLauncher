@@ -14,13 +14,13 @@ public class DsLauncherNdibApiClient(IOptions<DsLauncherOptions> options)
         await Download(bearerToken, url, stream, callback);
     }
 
-    public async Task<Guid?> UpdateToLatest(string bearerToken, Guid srcGuid, Platform platform, Stream stream, EventHandler<float> callback)
+    public async Task<Guid> UpdateToLatest(string bearerToken, Guid srcGuid, Platform platform, Stream stream, EventHandler<float> callback)
     {
         var url = $"Ndib/download/{srcGuid}/latest/{platform.ToString().ToLower()}";
         return await Download(bearerToken, url, stream, callback);
     }
 
-    public async Task<Guid?> DownloadWhole(string bearerToken, Guid productGuid, Platform platform, Stream stream, EventHandler<float> callback)
+    public async Task<Guid> DownloadWhole(string bearerToken, Guid productGuid, Platform platform, Stream stream, EventHandler<float> callback)
     {
         var url = $"Ndib/download/whole/{productGuid}/{platform.ToString().ToLower()}";
         return await Download(bearerToken, url, stream, callback);
@@ -32,7 +32,7 @@ public class DsLauncherNdibApiClient(IOptions<DsLauncherOptions> options)
         await Download(bearerToken, url, stream, callback);
     }
 
-    async Task<Guid?> Download(string bearerToken, string url, Stream stream, EventHandler<float> callback)
+    async Task<Guid> Download(string bearerToken, string url, Stream stream, EventHandler<float> callback)
     {
         var client = GetClient(bearerToken);
 

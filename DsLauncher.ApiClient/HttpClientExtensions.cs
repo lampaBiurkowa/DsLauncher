@@ -5,7 +5,7 @@ public static class HttpClientProgressExtensions
 {
     const string LATEST_PACKAGE_GUID_HEADER = "Latest-Package";
 
-    public static async Task<Guid?> DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination, IProgress<float>? progress = null, CancellationToken ct = default)
+    public static async Task<Guid> DownloadDataAsync(this HttpClient client, string requestUrl, Stream destination, IProgress<float>? progress = null, CancellationToken ct = default)
     {
         using var response = await client.GetAsync(requestUrl, HttpCompletionOption.ResponseHeadersRead, ct);
         var contentLength = response.Content.Headers.ContentLength;
