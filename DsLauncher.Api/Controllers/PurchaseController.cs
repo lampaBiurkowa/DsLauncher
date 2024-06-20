@@ -36,7 +36,7 @@ public class PurchaseController(
         var product = await productRepo.GetById(guid.Deobfuscate().Id, ct: ct);
         if (product == null) return Problem();
 
-        var userSubscribed = (await subscriptionRepo.GetAll(restrict: x => x.UserGuid == userGuid && x.DeveloperId == guid.Deobfuscate().Id, ct: ct)).Count != 0;
+        var userSubscribed = (await subscriptionRepo.GetAll(restrict: x => x.UserGuid == userGuid && x.DeveloperId == product.DeveloperGuid.Deobfuscate().Id, ct: ct)).Count != 0;
         var client = dsCoreClientFactory.CreateClient(HttpContext.GetBearerToken()!);
         var result = await client.Billing_PayOnceAsync(new()
         {
