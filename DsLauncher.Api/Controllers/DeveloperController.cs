@@ -72,7 +72,7 @@ public class DeveloperController(
         var userGuid = HttpContext.GetUserGuid();
         if (userGuid == null) return Unauthorized();
         
-        var subscriptions = await subscriptionRepo.GetAll(restrict: x => x.UserGuid == userGuid && x.DeveloperGuid == guid, ct: ct);
+        var subscriptions = await subscriptionRepo.GetAll(restrict: x => x.UserGuid == userGuid && x.DeveloperId == guid.Deobfuscate().Id, ct: ct);
         return Ok(subscriptions.Count != 0);
     }
 
