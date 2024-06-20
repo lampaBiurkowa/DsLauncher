@@ -79,7 +79,7 @@ public class DeveloperController(
     [HttpGet]
     [Route("{guid}/subscriptions")]
     public async Task<ActionResult<int>> GetSubscriptionsCount(Guid guid, CancellationToken ct) =>
-        Ok(await subscriptionRepo.GetCount(x => x.DeveloperGuid == guid, ct));
+        Ok(await subscriptionRepo.GetCount(x => x.DeveloperId == guid.Deobfuscate().Id, ct));
 
     async Task<bool> BelongsToDeveloper(Guid developerGuid, CancellationToken ct)
     {
