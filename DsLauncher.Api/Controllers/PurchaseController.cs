@@ -67,7 +67,7 @@ public class PurchaseController(
         if (userGuid == null) return Unauthorized();
 
         var passwordNewHash = SecretsBuilder.CreatePasswordHash(developerKey, string.Empty);
-        var license = (await licenseRepo.GetAll(restrict: x => x.Key == passwordNewHash && x.ValidTo < DateTime.UtcNow, ct: ct)).FirstOrDefault();
+        var license = (await licenseRepo.GetAll(restrict: x => x.Key == passwordNewHash && x.ValidTo > DateTime.UtcNow, ct: ct)).FirstOrDefault();
         if (license == null) return Unauthorized();
 
         var client = dsCoreClientFactory.CreateClient(HttpContext.GetBearerToken()!);
