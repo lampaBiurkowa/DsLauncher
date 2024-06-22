@@ -65,8 +65,9 @@ public class NdibController(NdibService ndibService, Repository<Package> package
 
     [DisableRequestSizeLimit]
     [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
-    [HttpPost("upload")]
+    [HttpPost("upload/{developerGuid}")]
     public async Task<ActionResult> UploadNew(
+        Guid developerGuid,
         IFormFile coreFile,
         IFormFile metadataFile,
         IFormFile? winFile = null,
@@ -76,7 +77,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
     {
         if (coreFile == null || metadataFile == null) return BadRequest("core & metadata expected");
 
-        var developer = await ndibService.GetUserDeveloper(HttpContext.GetUserGuid(), ct);
+        var developer = await ndibService.GetDeveloper(HttpContext.GetUserGuid(), developerGuid, ct);
         if (developer == null) return Unauthorized();
 
         var metadataTempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}");

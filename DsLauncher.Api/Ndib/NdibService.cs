@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.Text;
+using DibBase.Extensions;
 
 namespace DsLauncher.Api.Ndib;
 
@@ -128,10 +129,13 @@ public class NdibService(
         await productRepo.UpdateAsync(product, ct);
     }
 
-    public async Task<Developer?> GetUserDeveloper(Guid? userGuid, CancellationToken ct)
+    public async Task<Developer?> GetDeveloper(Guid? userGuid, Guid developerId, CancellationToken ct)
     {
         if (userGuid == null) return null;
-        return (await developerRepo.GetAll(ct: ct)).FirstOrDefault(x => x.UserGuids.Contains((Guid)userGuid));
+        var developer = await developerRepo.GetById(developerId.Deobfuscate().Id, ct: ct);
+        if (developer?.UserGuids.Contains((Guid)userGuid) != true) return null;
+        
+        return developer;
     }
 
     public bool UserIsFromDeveloper(Guid? userGuid, Developer developer)
