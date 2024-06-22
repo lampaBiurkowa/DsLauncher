@@ -88,7 +88,7 @@ public class NdibController(NdibService ndibService, Repository<Package> package
         Package newPackage;
         if (product == null)
             newPackage = await ndibService.PersistPackage(ndibData, developer.Id, ct);
-        else if (!ndibService.UserIsFromDeveloper(HttpContext.GetUserGuid(), product.Developer!))
+        else if (product.DeveloperGuid != developerGuid)
             return Unauthorized();
         else
             newPackage = await ndibService.PersistPackage(ndibData, product, ct);
