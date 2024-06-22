@@ -55,7 +55,7 @@ public class NewsController(
     public async Task<ActionResult<List<News>>> GetByDeveloper(Guid guid, bool publicOnly = true, CancellationToken ct = default)
     {
         var news = await repo.GetAll(
-            restrict: x => x.Product != null && x.Product.DeveloperId == guid.Deobfuscate().Id && !publicOnly || x.IsPublic,
+            restrict: x => x.Product != null && x.Product.DeveloperId == guid.Deobfuscate().Id && (!publicOnly || x.IsPublic),
             expand: [x => x.Product], ct: ct);
         return Ok(news.Select(x => IdHelper.HidePrivateId(x)));
     }
